@@ -343,7 +343,6 @@ def JtWithBackgroundRatio(dataset,histname,bgname):
     ax.set_ylim([0,2.2]) #Set y-axis limits     
     ax.set_yscale('linear')
   axs[0].legend(loc = 'lower left')
-  plt.show() #Draw figure on screen
   
 def JtWithBackgroundRatioAll(dataset,histname,bgname):
   """Draws a 4x4 grid with jT and Bg on top and third for 8 jet pT bins and ratio between these on second and bottom row

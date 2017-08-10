@@ -9,8 +9,18 @@ from matplotlib.ticker import LogLocator
 import rootpy.plotting.root2matplotlib as rplt
 import matplotlib.pyplot as plt
 
-def makegrid(nx=4,ny=2,xlog=True,ylog=True,d=None):
-  fig, axs = plt.subplots(ny,nx,figsize=(10,5),sharey=False,sharex=True) #Create figure with 8 subfigures, axs is a list of subfigures, fig is the whole thing
+def makegrid(nx=4,ny=2,xlog=True,ylog=True,d=None,shareY=True,figsize = (10,5)):
+  """Create and nx by ny grid of subfigures with shared y-axes
+  
+  Args:
+    nx: Number of figures in y direction, default is 4
+    ny: Number of figures in x direction, deftault is 2
+    xlog: Whether to use logarithmic scale on X-axis, default is True
+    ylog: Whether to use logarithmic scale on Y-axis, default is True
+    d: Not used
+    shareY: Whether subplots should share Y-axis, default is True
+  """
+  fig, axs = plt.subplots(ny,nx,figsize=figsize,sharey=shareY,sharex=True) #Create figure with 8 subfigures, axs is a list of subfigures, fig is the whole thing
   #axs = axs.reshape(nx*ny) #Because the figures is in a nx*ny layout axs is a 2 dimensional array with nx * ny elements, this makes it a 1 dimensional array with nx*ny  elements
   #axs[0][0].text(0.02,0.005,r'pPb $\sqrt{s_{NN}} = 5.02 \mathrm{TeV}$' '\n Charged jT\n' r'Anti-$k_T$, R=0.4' '\nJet Cone',fontsize=7) #Add text to second subfigure, first parameters are coordinates in the drawn scale/units
   #axs[1][0].text(0.02,0.005,d['system'] +'\n'+  d['jettype'] +'\n'+ d['jetalg'] + '\n'+ d['trigger'],fontsize = 7)
@@ -54,6 +64,14 @@ def makegrid(nx=4,ny=2,xlog=True,ylog=True,d=None):
 
 
 def make8grid(xlog=True,ylog=True,bins=None,d=None):
+  """Create an 4 by 2 grid of subfigures with shared axes
+  
+  Args:
+    xlog: Whether to use logarithmic scale on X-axis, default is True
+    ylog: Whether to use logarithmic scale on Y-axis, default is True
+    d: Not used
+    bins: Not used
+  """
   fig, axs = plt.subplots(2,4,figsize=(10,5),sharey=True,sharex=True) #Create figure with 8 subfigures, axs is a list of subfigures, fig is the whole thing
   axs = axs.reshape(8) #Because the figures is in a 2x4 layout axs is a 2 dimensional array with 2x4 elements, this makes it a 1 dimensional array with 8 elements
 
@@ -85,6 +103,16 @@ def make8grid(xlog=True,ylog=True,bins=None,d=None):
   return fig,axs
 
 def draw8grid(measJt,measBg,jetPt,xlog = True,ylog = True,name="newfile.pdf"):
+  """Create an 4 by 2 grid of subfigures with shared axes and plots jT with background in jet pT bins
+  
+  Args:
+    measJt: List of jT histograms
+    measBg: List of Bg Histograms
+    jetPt: List of jet Pt bins in tuples (low border, high border)
+    xlog: Whether to use logarithmic scale on X-axis, default is True
+    ylog: Whether to use logarithmic scale on Y-axis, default is True
+    name: Name of output file
+  """
   fig, axs = plt.subplots(2,4,figsize=(10,5),sharey=True,sharex=True) #Create figure with 8 subfigures, axs is a list of subfigures, fig is the whole thing
   axs = axs.reshape(8) #Because the figures is in a 2x4 layout axs is a 2 dimensional array with 2x4 elements, this makes it a 1 dimensional array with 8 elements
 

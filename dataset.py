@@ -165,7 +165,7 @@ class dataset(object):
 
 d = dict(
     jetalg = r'Anti-$k_T$, R=0.4',
-    jettype = 'Charged Jets',
+    jettype = 'Full Jets',
     system = r'pPb $\sqrt{s_{NN}} = 5.02 \mathrm{TeV}$' ,
     trigger = 'kEMCEJE'
 )
@@ -382,7 +382,6 @@ def JtWithBackgroundRatioAll(dataset,histname,bgname):
     ax.set_ylim([0,2.2]) #Set y-axis limits     
     ax.set_yscale('linear')
   axs[0].legend(loc = 'lower left')
-  plt.show() #Draw figure on screen 
     
 def main():
   print 'Number of arguments: ', len(sys.argv), 'arguments.'

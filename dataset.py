@@ -115,7 +115,19 @@ class dataset(object):
       print ratios
    
 
-  # 
+  def getSubtracted(self,inclusive,background,**kwargs):
+    hist,jetpt = self.getHist(inclusive,jetpt=True)
+    bg = self.getHist(background,isBG = True,jetpt = False)
+    signals = []
+    for h,b in zip(hist,bg):
+      s = h.Clone()
+      s.Add(b,-1)
+      signals.append(s)
+    if(kwargs.get('jetpt',False)):
+      return signals,jetpt
+    else:
+      return signals    
+  
   def getHist(self,name,**kwargs):
     """
     Retrieve a list of histograms by jet pT bins

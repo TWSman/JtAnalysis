@@ -139,7 +139,10 @@ class dataset(object):
       isbg: Determines which normalization to use    
     
     """
-    hist = [self._f.Get('{0[dir]}/{0[histname]}/{0[histname]}NFin{0[NFin]:02d}JetPt{0[pT]:02d}'.format({'dir':self._directory, 'histname':name,'NFin':self._NFIN,'pT':i})).Clone() for i in range(0,self._range)]  #Get jT histograms from file an array
+    if('dir' in kwargs):
+      hist = [self._f.Get('{0[dir]}/{0[histname]}/{0[histname]}NFin{0[NFin]:02d}JetPt{0[pT]:02d}'.format({'dir':kwargs['dir'], 'histname':name,'NFin':self._NFIN,'pT':i})).Clone() for i in range(0,self._range)]  #Get jT histograms from file an array
+    else:
+      hist = [self._f.Get('{0[dir]}/{0[histname]}/{0[histname]}NFin{0[NFin]:02d}JetPt{0[pT]:02d}'.format({'dir':self._directory, 'histname':name,'NFin':self._NFIN,'pT':i})).Clone() for i in range(0,self._range)]  #Get jT histograms from file an array
     #print('{0[dir]}/{0[histname]}/{0[histname]}NFin{0[NFin]:02d}JetPt{0[pT]:02d}'.format({'dir':self._directory, 'histname':name,'NFin':self._NFIN,'pT':1}))
     jetPt = [(int(re.search( r'p_{T,jet} : ([\d]*)\.[\d] - ([\d]*).[\d]*',h.GetTitle(), re.M|re.I).group(1)),int(re.search( r'p_{T,jet} : ([\d]*)\.[\d] - ([\d]*).[\d]*',h.GetTitle(), re.M|re.I).group(2))) for h in hist] #Use regular expressions to extract jet pT range from histogram titles
     #print(len(hist))
@@ -168,6 +171,28 @@ class dataset(object):
       return hist,jetPt
     else:
       return hist
+    
+  def get2DHist(self,name,**kwargs):
+    """
+    Retrieve a list of 2D histograms by jet pT bins
+    
+    Args:
+      name: Name of histogram
+  
+    Kwargs:
+      isbg: Determines which normalization to use    
+    
+    """
+    if('dir' in kwargs):
+      hist = [self._f.Get('{0[dir]}/{0[histname]}/{0[histname]}NFin{0[NFin]:02d}JetPt{0[pT]:02d}'.format({'dir':kwargs['dir'], 'histname':name,'NFin':self._NFIN,'pT':i})).Clone() for i in range(0,self._range)]  #Get jT histograms from file an array
+    else:
+      hist = [self._f.Get('{0[dir]}/{0[histname]}/{0[histname]}NFin{0[NFin]:02d}JetPt{0[pT]:02d}'.format({'dir':self._directory, 'histname':name,'NFin':self._NFIN,'pT':i})).Clone() for i in range(0,self._range)]  #Get jT histograms from file an array
+    jetPt = [(int(re.search( r'p_{T,jet} : ([\d]*)\.[\d] - ([\d]*).[\d]*',h.GetTitle(), re.M|re.I).group(1)),int(re.search( r'p_{T,jet} : ([\d]*)\.[\d] - ([\d]*).[\d]*',h.GetTitle(), re.M|re.I).group(2))) for h in hist] #Use regular expressions to extract jet pT range from histogram titles
+    if(kwargs.get('jetpt',False)):
+      return hist,jetPt
+    else:
+      return hist
+    
   
   def name(self):
     return self._name

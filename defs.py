@@ -9,7 +9,7 @@ from matplotlib.ticker import LogLocator
 import rootpy.plotting.root2matplotlib as rplt
 import matplotlib.pyplot as plt
 
-def makegrid(nx=4,ny=2,xlog=True,ylog=True,d=None,shareY=True,figsize = (10,5)):
+def makegrid(nx=4,ny=2,xlog=True,ylog=True,d=None,shareY=True,figsize = (10,5),**kwargs):
   """Create and nx by ny grid of subfigures with shared y-axes
   
   Args:
@@ -20,6 +20,15 @@ def makegrid(nx=4,ny=2,xlog=True,ylog=True,d=None,shareY=True,figsize = (10,5)):
     d: Not used
     shareY: Whether subplots should share Y-axis, default is True
   """
+  if('xtitle' in kwargs):
+    xtitle = kwargs['xtitle']
+  else:
+    xtitle = r'$j_{T}\left[GeV\right]$'
+  if('ytitle' in kwargs):
+    ytitle = kwargs['ytitle']
+  else:
+    ytitle = r'$\frac{1}{N_{jets}}\frac{dN}{j_{T}dj_{T}}$'
+
   fig, axs = plt.subplots(ny,nx,figsize=figsize,sharey=shareY,sharex=True) #Create figure with 8 subfigures, axs is a list of subfigures, fig is the whole thing
   #axs = axs.reshape(nx*ny) #Because the figures is in a nx*ny layout axs is a 2 dimensional array with nx * ny elements, this makes it a 1 dimensional array with nx*ny  elements
   #axs[0][0].text(0.02,0.005,r'pPb $\sqrt{s_{NN}} = 5.02 \mathrm{TeV}$' '\n Charged jT\n' r'Anti-$k_T$, R=0.4' '\nJet Cone',fontsize=7) #Add text to second subfigure, first parameters are coordinates in the drawn scale/units
@@ -32,14 +41,14 @@ def makegrid(nx=4,ny=2,xlog=True,ylog=True,d=None,shareY=True,figsize = (10,5)):
 #   for ax in axs[-nx:]:
 #     ax.set_xlabel(r'$j_{T}\left[GeV\right]$') #Add x-axis labels for bottom row
   for ax in axs:
-    ax[0].set_ylabel(r'$\frac{1}{N_{jets}}\frac{dN}{j_{T}dj_{T}}$',fontsize=18) #Add y-axis labels to left- and righmost subfigures
-    ax[-1].set_ylabel(r'$\frac{1}{N_{jets}}\frac{dN}{j_{T}dj_{T}}$',fontsize=18) #Add y-axis labels to left- and righmost subfigures
+    ax[0].set_ylabel(ytitle) #Add y-axis labels to left- and righmost subfigures
+    ax[-1].set_ylabel(ytitle) #Add y-axis labels to left- and righmost subfigures
     ax[-1].yaxis.set_label_position('right') #Set the y-axis label position to right hand side for the rightmost subfigures
     for a in ax[1:]:
       a.yaxis.tick_right()  
   
   for ax in axs[-1]:
-    ax.set_xlabel(r'$j_{T}\left[GeV\right]$') #Add x-axis labels for bottom row
+    ax.set_xlabel(xtitle) #Add x-axis labels for bottom row
 
   for axs1 in axs: 
     for ax in axs1:

@@ -152,16 +152,21 @@ class dataset(object):
       h.Sumw2()
       print "Rebinning {} by {} in set {} that has {} bins".format(h.GetTitle(),self._rebin,self._name,h.GetNbinsX())
       h.Rebin(self._rebin)
-      if(kwargs.get('isBg',False)):
-        h.SetLineColor(self.properties.get('color',1) + 1)
-        h.SetMarkerColor(self.properties.get('color',1) + 1)
-        h.Scale(1.0/bgN,'width')
-        print("{} is bg".format(name))
-
-      else:
+      print(kwargs)
+      if(self.properties.get('isWeight',False)):
         h.SetLineColor(self.properties.get('color',1))
         h.SetMarkerColor(self.properties.get('color',1))
-        h.Scale(1.0/N,'width')
+        h.Scale(1.0,'width')
+      else:
+        if(kwargs.get('isBg', False)):
+          h.SetLineColor(self.properties.get('color', 1) + 1)
+          h.SetMarkerColor(self.properties.get('color', 1) + 1)
+          h.Scale(1.0 / bgN, 'width')
+          print("{} is bg".format(name))
+        else:
+          h.SetLineColor(self.properties.get('color', 1))
+          h.SetMarkerColor(self.properties.get('color', 1))
+          h.Scale(1.0 / N, 'width')
 
       h.SetMarkerStyle(self.properties.get('style',24))
       h.SetMarkerSize(0.5)
@@ -254,16 +259,20 @@ class datasetMixed(dataset,object):
       h.Sumw2()
       print "Rebinning {} by {} in set {} that has {} bins".format(h.GetTitle(),self._rebin,self._name,h.GetNbinsX())
       h.Rebin(self._rebin)
-      if(kwargs.get('isBg',False)):
-        h.SetLineColor(self.properties.get('color',1) + 1)
-        h.SetMarkerColor(self.properties.get('color',1) + 1)
-        h.Scale(1.0/bgN,'width')
-        print("{} is bg".format(name))
-
-      else:
+      if(self.properties.get('isWeight',False)):
         h.SetLineColor(self.properties.get('color',1))
         h.SetMarkerColor(self.properties.get('color',1))
-        h.Scale(1.0/N,'width')
+        h.Scale(1.0,'width')
+      else:
+        if(kwargs.get('isBg',False)):
+          h.SetLineColor(self.properties.get('color',1) + 1)
+          h.SetMarkerColor(self.properties.get('color',1) + 1)
+          h.Scale(1.0/bgN,'width')
+          print("{} is bg".format(name))
+        else:            
+          h.SetLineColor(self.properties.get('color',1))
+          h.SetMarkerColor(self.properties.get('color',1))
+          h.Scale(1.0/N,'width')
 
       h.SetMarkerStyle(self.properties.get('style',24))
       h.SetMarkerSize(0.5)

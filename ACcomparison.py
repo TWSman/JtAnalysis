@@ -67,7 +67,7 @@ def main():
         #if(i == 0):
         ax.set_yscale('linear')
         ax.set_xlim([0.1,20]) #Set x-axis limits
-        ax.set_ylim([0,2.2]) #Set y-axis limits
+        ax.set_ylim([0.8,1.2]) #Set y-axis limits
      
     axs[0].legend(loc = 'lower left')
         

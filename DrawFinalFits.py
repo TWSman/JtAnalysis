@@ -226,7 +226,7 @@ def main():
     handles = [container.ErrorbarContainer(h,has_xerr=False,has_yerr=True) if isinstance(h, container.ErrorbarContainer) else h for h in handles]
     axs[0].legend(handles,labels,loc = 'lower left',numpoints=1)
   
-    axs[0].text(0.11,3e2,"This thesis",weight='bold')
+    axs[0].text(0.11,3e2,"ALICE",weight='bold')
   
     fig.align_labels()
     print("Save PythonFigures/JtSignalFinalFitJetPt{}.pdf".format(ij))
@@ -470,13 +470,13 @@ def drawWithErrors2Combined(h,h_sys,h2,h2_sys,xlow,xhigh,logx,ylow,yhigh,ylog,xT
   handles, labels = ax.get_legend_handles_labels()
   if(len(labels) > 4):
     ax.legend(np.delete(handles,4), np.delete(labels,4), loc = 'upper left')
-    ax.text((xhigh-xlow)*0.09+xlow,0.57*(yhigh-ylow)+ylow,"This thesis",weight='bold')
+    ax.text((xhigh-xlow)*0.09+xlow,0.57*(yhigh-ylow)+ylow,"ALICE",weight='bold')
   else:
     ax.legend(loc='upper right')
     if(len(labels) > 2):
-      ax.text((xhigh-xlow)*0.770+xlow,0.66*(yhigh-ylow)+ylow,"This thesis",weight='bold')
+      ax.text((xhigh-xlow)*0.770+xlow,0.66*(yhigh-ylow)+ylow,"ALICE",weight='bold')
     else:
-      ax.text((xhigh-xlow)*0.770+xlow,0.80*(yhigh-ylow)+ylow,"This thesis",weight='bold')
+      ax.text((xhigh-xlow)*0.770+xlow,0.80*(yhigh-ylow)+ylow,"ALICE",weight='bold')
   #ax.legend(loc = 'upper left') 
   ax.set_xlim([xlow,xhigh])
   ax.set_ylim([ylow,yhigh])

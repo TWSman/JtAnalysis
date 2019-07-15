@@ -16,9 +16,10 @@ def main():
   filename = sys.argv[1]
   print "Input file: "
   print filename
-  Mixed_FullJets_R04 = datasetMixed("FullR04",NFIN=0,range=5,filename=filename,directory='AliJJetJtTask/AliJJetJtHistManager',directory2='AliJJetJtTask_kEMCEJE/AliJJetJtHistManager',color=2,style=24,rebin=5)
-  JtWithBackgroundRatio(Mixed_FullJets_R04, 'JetConeJtWeightBin', 'BgJtWeightBin')
-  plt.savefig("PythonFigures/MixedFullJetsR04JetConeJtInclusive.pdf",format='pdf') #Save figure
+  #FullJets_R04 = dataset("FullR04",NFIN=0,filename=filename,directory='AliJJetJtTask_kEMCEJE/AliJJetJtHistManager',color=2,style=24,rebin=5)
+  Mixed_FullJets_R04 = datasetMixed("FullR04",NFIN=0,range=5,filename=filename,directory='AliJJetJtTask/AliJJetJtHistManager',directory2='AliJJetJtTask_kEMCEJE/AliJJetJtHistManager',color=2,style=24,rebin=2)
+  JtWithBackgroundRatio(Mixed_FullJets_R04, 'JetConeJtWeightBin', 'BgJtWeightBin','BgRndmJtWeightBin',includeRandom=True,start=4,step=1)
+  plt.savefig("PythonFigures/MixedFullJetsR04JetConeJtInclusiveComparison.pdf",format='pdf') #Save figure
   plt.show() #Draw figure on screen
 
 

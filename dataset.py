@@ -439,7 +439,21 @@ class datasetMixed(dataset,object):
 
   def getGraphs(self,**kwargs):
     return self.getGraphs2(self._range[0],8,**kwargs)
-  
+
+
+  def getJetPt(self,**kwargs):
+    try:
+      if('dir' in kwargs):
+        print('{0[dir]}/JetPt/JetPtNFin{0[NFin]:02d}'.format({'dir':kwargs['dir'],'NFin':self._NFIN}))
+        hist = self._f.Get('{0[dir]}/JetPt/JetPtNFin{0[NFin]:02d}'.format({'dir':kwargs['dir'],'NFin':self._NFIN}))
+      else:
+        print('{0[dir]}/JetPt/JetPtNFin{0[NFin]:02d}'.format({'dir':self._directory2,'NFin':self._NFIN}))
+        hist = self._f2.Get('{0[dir]}/JetPt/JetPtNFin{0[NFin]:02d}'.format({'dir':self._directory2,'NFin':self._NFIN}))
+    except rootpy.io.file.DoesNotExist:
+      return None
+    hist.Scale(1.0,'width')
+    return hist
+
   def getHist(self,name,**kwargs):
     """Return a set of histograms
     

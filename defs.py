@@ -405,6 +405,38 @@ def drawFit(histo,fit,iJet,iFinder,title):
   #plt.savefig("PythonFigures/UnfoldedFullJetsR04JetConeJtFinalJetPt{0}.pdf".format(separate),format='pdf') #Save figure
   plt.show() #Draw figure on screen
 
+def grrScale(gr1,scale):
+  x1 = Double()
+  x_ = Double()
+  x1e = Double()
+
+  y1 = Double()
+  y1e = Double()
+
+  y = []
+  ex = []
+  ey = []
+
+  NC =  gr1.GetN()
+  x = [0 for i in range(NC)]
+
+  for ii in range(NC):
+    x1e = gr1.GetErrorX(ii)
+    y1e = gr1.GetErrorY(ii)
+    gr1.GetPoint(ii, x_, y1)
+    x1 = x_ * 1.0
+    x[ii] = x1
+    y.append(y1*scale)
+    ex.append(x1e)
+    ey.append(y1e*scale)
+    
+  gr= Graph(NC)
+  for x0,y0,x0e,y0e,i in zip(x,y,ex,ey,range(NC)):
+    gr.SetPoint(i,x0,y0)
+    gr.SetPointError(i,x0e,x0e,y0e,y0e)
+  return gr
+
+
 def grrDivide(gr1,gr2):
   x1 = Double()
   x_ = Double()

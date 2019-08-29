@@ -22,7 +22,7 @@ def main():
   filename = sys.argv[1]
   print "Input file: "
   print filename
-  MC_FullJets_R04 = dataset("FullR04",NFIN=0,range=9,filename=filename,directory='AliJJetJtTask/AliJJetJtHistManager',color=2,style=24,rebin=1)
+  MC_FullJets_R04 = dataset("FullR04",NFIN=0,range=(0,9),filename=filename,directory='AliJJetJtTask/AliJJetJtHistManager',color=2,style=24,rebin=1)
   
   response, jetPt = MC_FullJets_R04.get2DHist('TrackJtCorrBin',dir='AliJJetJtTask/AliJJetJtMCHistManager', jetpt = True)
   ROOT.gStyle.SetOptStat(0)
@@ -69,7 +69,7 @@ def main():
     rplt.hist2d(r,axes=ax,label=MC_FullJets_R04.name(),norm=LogNorm())
     x1 =linspace(0,10,50)
     y1 = linspace(0,10,50)
-    plt.plot(x,y,'-r')
+    plt.plot(x1,y1,'-r')
     
     ax.text(3.5,0.5,r'$p_{{T,\mathrm{{jet}}}}$:''\n'r' {:02d}-{:02d} GeV'.format(pT[0],pT[1]),bbox=dict(boxstyle="round",
                    ec=(1., 0.5, 0.5),

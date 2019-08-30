@@ -40,7 +40,17 @@ n_figs = 6
 start= 4
 end=8
 
+
+
 def getBackgroundSystematic(signals,signalsRandom,divisor):
+  """
+  Creates a set of systematic error boxes for drawing
+  
+  Args:
+    signals: Distributions from default background method
+    signalsRandom: Distributions from alternative background method
+    divisor: Distribution to be used for systematic error of ratio
+  """
   systematics = []
   for h1,h2,h3 in zip(signals,signalsRandom,divisor):
     system = []
@@ -61,6 +71,7 @@ def getBackgroundSystematic(signals,signalsRandom,divisor):
 
 def main(): 
   Rebin = 4
+  #Load data
   Mixed_FullJets_R04_HM_01 = datasetMixed("V0A, 0 -   1%",NFIN=0,range=(1,5),filename="CF_pPb_legotrain/legotrain_CF_pPb_2274_20181219/legotrain_CF_pPb_2274_20181219_LHC13cde.root",directory='AliJJetJtTask_Central01/AliJJetJtHistManager',directory2='AliJJetJtTask_kEMCEJE_Central01/AliJJetJtHistManager',color=colors[1],style=24,rebin=Rebin)
   Mixed_FullJets_R04_HM_10 = datasetMixed("V0A, 0 - 10%",NFIN=0, range=(1,5),filename="CF_pPb_legotrain/legotrain_CF_pPb_2305_20190109/legotrain_CF_pPb_2305_20190109_LHC13bcde.root",directory='AliJJetJtTask_Central10/AliJJetJtHistManager',directory2='AliJJetJtTask_kEMCEJE_Central10/AliJJetJtHistManager',color=colors[2],style=24,rebin=Rebin)
   FullJets_R04_MB = dataset("Minimum Bias",NFIN=0, range=(1,8),filename="CF_pPb_legotrain/legotrain_CF_pPb_2749_20190822/legotrain_CF_pPb_2749_20190822_LHC13de.root",directory="AliJJetJtTask_kEMCEJE/AliJJetJtHistManager",color=colors[0],style=24,rebin=Rebin)
@@ -68,10 +79,10 @@ def main():
   FullJets_R04_HM_10_ZDC = dataset("ZDC, 0 - 10%",NFIN=0, range=(1,8),filename="CF_pPb_legotrain/legotrain_CF_pPb_2749_20190822/legotrain_CF_pPb_2768_2019_0825LHC13d.root",directory="AliJJetJtTask_kEMCEJE_Central10/AliJJetJtHistManager",color=colors[5],style=24,rebin=Rebin)
 
   
-
+  
   inclusive,jetPt = FullJets_R04_MB.getHist('JetConeJtWeightBin',jetpt = True)
-  datasets = [FullJets_R04_MB]
   incs = [inclusive]
+  datasets = [FullJets_R04_MB]
   datasets.append(Mixed_FullJets_R04_HM_10)
   datasets.append(FullJets_R04_HM_10_ZDC)
 
@@ -87,7 +98,6 @@ def main():
   background = [data.getHist('BgJtWeightBin',jetpt=False,isBg=True) for data in datasets]
 
 
-  
 
   drawSignal(signals,systematics,names,colors,styles,jetPt)
 

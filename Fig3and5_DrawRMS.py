@@ -131,13 +131,7 @@ def main():
     if(y > 0 and yerr/y < 0.10):
       yerr = 0.08*y
     g.SetPointError(i,xerr,yerr)
-    
-  #gGausRMS_trackingerr = f2.Get("....")
-  #gGammaRMS_trackingerr = f2.Get("....")
-  #gGausRMSerr = defs.combineErrors(gGausRMSerr,gGausRMS_trackingerr)
-  #gGammaRMSerr = defs.combineErrors(gGammaRMSerr,gGammaRMS_trackingerr)
-  #gGausRMSerr = defs.addConstantError(gGausRMSerr,0.20,rel=True)
-  #gGammaRMSerr = defs.addConstantError(gGammaRMSerr,0.09,rel=True)
+
   iSPythia = 3
   gGausRMSPythia = f.Get("gGausRMS{:02d}".format(iSPythia))
   gGausYieldPythia = f.Get("gGausYield{:02d}".format(iSPythia))
@@ -241,23 +235,22 @@ def main():
   gausRMS[0].Print()
   
     
-  #drawWithErrors2(gGausRMS,gGausRMSerr,40,135,0,0,0.6,0,r'$p_\mathrm{T,jet}$ (GeV/c)',r'$\sqrt{\left<j_\mathrm{T}^{2}\right>}$',"Narrow Component","_triggered","PythonFigures/gausRMSWithSystematics",1,-1);
-  #drawWithErrors2(gGausYield,gGausYielderr,40,150,0,0,9,0,r'$p_\mathrm{T,jet}$',"Yield","Narrow Component","_triggered","PythonFigures/gausYieldWithSystematics",1,-1);
-  #drawWithErrors2(gGammaRMS,gGammaRMSerr,40,135,0,0,1.5,0,r'$p_\mathrm{T,jet}$ (GeV/c)',r'$\sqrt{\left<j_\mathrm{T}^{2}\right>}$',"Wide Component","_triggered","PythonFigures/gammaRMSWithSystematics",1,-1);
-  #drawWithErrors2(gGammaYield,gGammaYielderr,40,150,0,0,10,0,r'$p_\mathrm{T,jet}$',"Yield","Wide Component","_triggered","PythonFigures/gammaYieldWithSystematics",1,-1);
 
 
   pythiaN = [(gGausRMSPythia,"Pythia6"),(gausRMS[0],"Pythia8 4C"),(gausRMS[1],"Pythia8 Monash"),(gausRMS[2],"Herwig 7.0")]
   pythiaW = [(gGammaRMSPythia,"Pythia6"),(gammaRMS[0],"Pythia8 4C"),(gammaRMS[1],"Pythia8 Monash"),(gammaRMS[2],"Herwig 7.0")]
   
+  #Fig 3, NArrow and Wide RMS without Pythia 
   drawWithErrors2Combined(gGausRMS,gGausRMSerr,gGammaRMS,gGammaRMSerr,35,135,0,0,1.5,0,r'$p_\mathrm{T,jet}$ (GeV/c)',r'$\sqrt{\left<j_\mathrm{T}^{2}\right>}$ (GeV/c)',"RMS","_triggered","PythonFigures/RMSWithSystematics",1,-1,wideE=0.041,narrowE=0.051)
-  #drawWithErrors2Combined(gGausRMS,gGausRMSerr,gGammaRMS,gGammaRMSerr,35,135,0,0,1.9,0,r'$p_\mathrm{T,jet}$ (GeV/c)',r'$\sqrt{\left<j_\mathrm{T}^{2}\right>}$ (GeV/c)',"","_triggered","PythonFigures/RMSWithSystematics_Pythia",1,-1,pythiaN=pythiaN,pythiaW=pythiaW,wideE=0.041,narrowE=0.051,titleLoc=(95,1.5))
-  #drawWithErrors2Combined(gGausRMS2,gGausRMSerr2,gGammaRMS2,gGammaRMSerr2,0,50,0,0,2.2,0,r'$p_\mathrm{T,trigger}$ (GeV/c)',r'$\sqrt{\left<j_\mathrm{T}^{2}\right>}$ (GeV/c)',"","_triggered","PythonFigures/RMSWithSystematics_DihadronTriggerPt",1,-1,jussiN=gGausRMSJussi,jussiW=gGammaRMSJussi,wideE=0.041,narrowE=0.051)
-  #drawWithErrors2Combined(gGausRMS,gGausRMSerr,gGammaRMS,gGammaRMSerr,1,135,0,0,2.2,0,r'$p_\mathrm{T,jet}$ (GeV/c)',r'$\sqrt{\left<j_\mathrm{T}^{2}\right>}$ (GeV/c)',"","_triggered","PythonFigures/RMSWithSystematics_DihadronJetPt",1,-1,jussiN=gGausRMSJussi2,jussiW=gGammaRMSJussi2,wideE=0.041,narrowE=0.051)
-
-  #compareToJussi(gGausRMS,gGausRMSerr,gGausRMSJussi,5,150,0,0,0.7,0,r'$p_\mathrm{T,jet}$',r'$\sqrt{\left<j_\mathrm{T}^{2}\right>}$',"RMS","_triggered","PythonFigures/RMSWithSystematics_Pythia",1,-1)
-  #compareToJussi(gGammaRMS,gGammaRMSerr,gGammaRMSJussi,5,150,0,0,1.5,0,r'$p_\mathrm{T,jet}$',r'$\sqrt{\left<j_\mathrm{T}^{2}\right>}$',"RMS","_triggered","PythonFigures/RMSWithSystematics_Pythia",1,-1)
   
+  #Fig 3, NArrow and Wide RMS with Pythia Comparison
+  drawWithErrors2Combined(gGausRMS,gGausRMSerr,gGammaRMS,gGammaRMSerr,35,135,0,0,1.9,0,r'$p_\mathrm{T,jet}$ (GeV/c)',r'$\sqrt{\left<j_\mathrm{T}^{2}\right>}$ (GeV/c)',"","_triggered","PythonFigures/RMSWithSystematics_Pythia",1,-1,pythiaN=pythiaN,pythiaW=pythiaW,wideE=0.041,narrowE=0.051,titleLoc=(95,1.5))
+  
+  #Fig 5 with pT,trigger on X-axis
+  drawWithErrors2Combined(gGausRMS2,gGausRMSerr2,gGammaRMS2,gGammaRMSerr2,0,50,0,0,2.2,0,r'$p_\mathrm{T,trigger}$ (GeV/c)',r'$\sqrt{\left<j_\mathrm{T}^{2}\right>}$ (GeV/c)',"","_triggered","PythonFigures/RMSWithSystematics_DihadronTriggerPt",1,-1,jussiN=gGausRMSJussi,jussiW=gGammaRMSJussi,wideE=0.041,narrowE=0.051)
+  
+  #Fig 5 with pT,jet on X-axis
+  drawWithErrors2Combined(gGausRMS,gGausRMSerr,gGammaRMS,gGammaRMSerr,1,135,0,0,2.2,0,r'$p_\mathrm{T,jet}$ (GeV/c)',r'$\sqrt{\left<j_\mathrm{T}^{2}\right>}$ (GeV/c)',"","_triggered","PythonFigures/RMSWithSystematics_DihadronJetPt",1,-1,jussiN=gGausRMSJussi2,jussiW=gGammaRMSJussi2,wideE=0.041,narrowE=0.051)
 
  
 
@@ -274,47 +267,6 @@ def ScaleTGraphErrors(graph,scale):
   return TGraphErrors(n,xs,ys,xerrs,yerrs)
     
 
-def compareToJussi(h,h_sys,h_jussi,xlow,xhigh,logx,ylow,yhigh,ylog,xTitle,yTitle,title,comment,file,iS,ij):
-  ax = plt.gca()
-  ax.set_xlim([xlow,xhigh])
-  ax.set_ylim([ylow,yhigh])
-  ax.set_xlabel(xTitle,fontsize=labelsize) #Add x-axis labels for bottom row
-  ax.set_ylabel(yTitle,fontsize=labelsize) #Add x-axis labels for bottom row
-  h_jussi.SetMarkerColor('red')
-  h_jussi.SetLineColor('red')
-  rplt.errorbar(h,xerr=False,emptybins=False,axes=ax,label='jet jT',fmt='+') #Plot jT histogram, 
-  rplt.errorbar(h_jussi,xerr=False,emptybins=False,axes=ax,label='diHadron jT')
-  errorboxes = []
-  n = h_sys.GetN()
-  xs = h_sys.GetX()
-  ys = h_sys.GetY()
-  xerrs = h_sys.GetEX()
-  yerrs = h_sys.GetEY()
-  for x in (xs,ys,xerrs,yerrs):
-    x.SetSize(n)
-  print(xs)
-  print(ys)
-  print(xerrs)
-  print(yerrs)
-  for x, y, xe, ye in zip(xs, ys, xerrs, yerrs):
-    rect = Rectangle((x - boxwidth, y - ye), boxwidth*2,ye*2)
-    errorboxes.append(rect)
-
-  pc = PatchCollection(errorboxes, facecolor='r', alpha=0.5,edgecolor='None')
-  ax.add_collection(pc)
-  print("({} - {})/9.0 + {} is {}".format(yhigh,ylow,ylow,(yhigh-ylow)/9.0+ylow))
-  ax.text(100,(yhigh-ylow)/12.0+ylow,title + '\n' + d['system'] +'\n'+  d['jettype'] +'\n'+ d['jetalg'],
-          fontsize = 10)
-  
-  handles, labels = ax.get_legend_handles_labels()
-  handles = [container.ErrorbarContainer(h,has_xerr=False,has_yerr=True) if isinstance(h, container.ErrorbarContainer) else h for h in handles]
-  ax.legend(handles,labels,loc = 'lower left',numpoints=1)
-  #ax.legend(loc = 'lower left')
-  ax.set_xlim([xlow,xhigh])
-  ax.set_ylim([ylow,yhigh])
-  plt.savefig("{}.pdf".format(file),format='pdf') #Save figure
-
-  plt.show() #Draw figure on screen
     
 
 def drawWithErrors2(h,h_sys,xlow,xhigh,logx,ylow,yhigh,ylog,xTitle,yTitle,title,comment,file,iS,ij):

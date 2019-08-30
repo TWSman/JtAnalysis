@@ -63,8 +63,6 @@ def main():
   
   Njets = 8
   
-
-  
   
   topcomment = "_systematics_Triggered"
   
@@ -99,21 +97,7 @@ def main():
   print(stats)
 
   n_figs = 2
-  
-  
-  
-#   if(n_figs == 2):
-#     fig,axs = defs.makeRatio(xlog=True,ylog=True,d=d,shareY=False,figsize = (5,6),grid=False)
-#   else:
-#     fig, axs = defs.makegrid(n_figs/2,2,xlog=True,ylog=True,d=d,shareY=False,figsize= (10,7.5) if n_figs == 4 else (n_figs*15/8,7.5) )
-#   axs = axs.reshape(n_figs)
-#   if(n_figs == 2):
-#     pT = jetPt[start]
-#     print(pT)
-#     axs[0].text(0.8,7,d['system'] +'\n'+  d['jettype'] +'\n'+ d['jetalg'] + '\n' + d['cut'] + '\n' + r'${:02d}\:\mathrm{{GeV}}/c < p_{{\mathrm{{T,jet}}}} < {:02d}\:\mathrm{{GeV}}/c$'.format(pT[0],pT[1]),fontsize = 10)
-#   else:
-#     axs[1].text(0.12,0.002,d['system'] +'\n'+  d['jettype'] +'\n'+ d['jetalg'] + '\n' + d['cut'],fontsize = 11)
-#   
+
   ratios = []
   xs2 = []
 
@@ -126,8 +110,7 @@ def main():
     xs = np.arange(0,xhigh,0.01).tolist()
     for ii in range(6):
       print(fit.GetParameter(ii))
-    #B2 is Gauss normalization
-    #B3 is Gamma normalization
+
     gauss = fit.Clone()
     gauss.SetParameter(3,0)
     gamma = fit.Clone()
@@ -146,22 +129,13 @@ def main():
     plot = rplt.errorbar(jT,xerr=False,emptybins=False,axes=ax,label="ALICE",fmt='o',fillstyle='none') #Plot jT histogram, 
     line = plot.get_children()[0]
     line.set_markersize(mSize)
-    if(True):
-      line.set_markerfacecolor('none')
-      #line.set_markeredgecolor(color)
-      line.set_color(color)
-#     line.set_markerfacecolor('none')
-#     line.set_markeredgecolor(colors[c])
-#     line.set_markerfacecolor('none')
-#     line.set_markeredgecolor('none')
-#     line.set_drawstyle('default')
-#     line.set_linestyle('dashed')  
-#     line.set_color(colors[c])
+    line.set_markerfacecolor('none')
+    line.set_color(color)
+
     if(n_figs > 2):
       ax.text(0.5,1e2,r'${:02d}\:\mathrm{{GeV}} < p_{{\mathrm{{T,jet}}}} < {:02d}\:\mathrm{{GeV}}$'.format(pT[0],pT[1])) 
     ax.set_xlim([xlow,xhigh]) #Set x-axis limits
     ax.set_ylim([1e-6,2e3]) #Set y-axis limits
-    #ax.set_xticklabels(ax.get_xticklabels(),horizontalalignment='left')
     x_ = Double()
     y1 = Double()
     xe = Double()
@@ -199,7 +173,6 @@ def main():
     ax = axs[1]
   #for ratio,pT,ax,color in zip(ratios,jetPt[start:],axs[n_figs/2:n_figs+1],colors[1:]):
     
-    print("Debug")
     ratio.SetMarkerColor(color)
     ratio.SetLineColor(color)
     ratio.SetMarkerStyle(24)

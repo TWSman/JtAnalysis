@@ -63,24 +63,25 @@ def main():
   Rebin = 4
   Mixed_FullJets_R04_HM_01 = datasetMixed("V0A, 0 -   1%",NFIN=0,range=(1,5),filename="CF_pPb_legotrain/legotrain_CF_pPb_2274_20181219/legotrain_CF_pPb_2274_20181219_LHC13cde.root",directory='AliJJetJtTask_Central01/AliJJetJtHistManager',directory2='AliJJetJtTask_kEMCEJE_Central01/AliJJetJtHistManager',color=colors[1],style=24,rebin=Rebin)
   Mixed_FullJets_R04_HM_10 = datasetMixed("V0A, 0 - 10%",NFIN=0, range=(1,5),filename="CF_pPb_legotrain/legotrain_CF_pPb_2305_20190109/legotrain_CF_pPb_2305_20190109_LHC13bcde.root",directory='AliJJetJtTask_Central10/AliJJetJtHistManager',directory2='AliJJetJtTask_kEMCEJE_Central10/AliJJetJtHistManager',color=colors[2],style=24,rebin=Rebin)
-  Mixed_FullJets_R04_MB = dataset("Minimum Bias",NFIN=0, range=(1,8),filename="CF_pPb_legotrain/legotrain_CF_pPb_2749_20190822/legotrain_CF_pPb_2749_20190822_LHC13de.root",directory="AliJJetJtTask_kEMCEJE/AliJJetJtHistManager",color=colors[0],style=24,rebin=Rebin)
-  Mixed_FullJets_R04_HM_01_ZDC = dataset("ZDC, 0 -    1%",NFIN=0, range=(1,8),filename="CF_pPb_legotrain/legotrain_CF_pPb_2749_20190822/legotrain_CF_pPb_2749_20190822_LHC13de.root",directory="AliJJetJtTask_kEMCEJE_Central01/AliJJetJtHistManager",color=colors[4],style=24,rebin=Rebin)
-  Mixed_FullJets_R04_HM_10_ZDC = dataset("ZDC, 0 - 10%",NFIN=0, range=(1,8),filename="CF_pPb_legotrain/legotrain_CF_pPb_2749_20190822/legotrain_CF_pPb_2768_2019_0825LHC13d.root",directory="AliJJetJtTask_kEMCEJE_Central10/AliJJetJtHistManager",color=colors[5],style=24,rebin=Rebin)
+  FullJets_R04_MB = dataset("Minimum Bias",NFIN=0, range=(1,8),filename="CF_pPb_legotrain/legotrain_CF_pPb_2749_20190822/legotrain_CF_pPb_2749_20190822_LHC13de.root",directory="AliJJetJtTask_kEMCEJE/AliJJetJtHistManager",color=colors[0],style=24,rebin=Rebin)
+  FullJets_R04_HM_01_ZDC = dataset("ZDC, 0 -    1%",NFIN=0, range=(1,8),filename="CF_pPb_legotrain/legotrain_CF_pPb_2749_20190822/legotrain_CF_pPb_2749_20190822_LHC13de.root",directory="AliJJetJtTask_kEMCEJE_Central01/AliJJetJtHistManager",color=colors[4],style=24,rebin=Rebin)
+  FullJets_R04_HM_10_ZDC = dataset("ZDC, 0 - 10%",NFIN=0, range=(1,8),filename="CF_pPb_legotrain/legotrain_CF_pPb_2749_20190822/legotrain_CF_pPb_2768_2019_0825LHC13d.root",directory="AliJJetJtTask_kEMCEJE_Central10/AliJJetJtHistManager",color=colors[5],style=24,rebin=Rebin)
 
   
 
-  inclusive,jetPt = Mixed_FullJets_R04_MB.getHist('JetConeJtWeightBin',jetpt = True)
-  datasets = [Mixed_FullJets_R04_MB]
+  inclusive,jetPt = FullJets_R04_MB.getHist('JetConeJtWeightBin',jetpt = True)
+  datasets = [FullJets_R04_MB]
   incs = [inclusive]
   datasets.append(Mixed_FullJets_R04_HM_10)
-  datasets.append(Mixed_FullJets_R04_HM_10_ZDC)
+  datasets.append(FullJets_R04_HM_10_ZDC)
 
 
   for data in datasets[1:]:
     incs.append(data.getHist('JetConeJtWeightBin',jetpt = False))
   names = [data.name() for data in datasets]
   signals  = [data.getSubtracted('JetConeJtWeightBin','BgJtWeightBin',jetpt = False) for data in datasets]
-  
+  signals_randomBg  = [data.getSubtracted('JetConeJtWeightBin','BgRndmJtWeightBin',jetpt = False,randomBG=True) for data in datasets]
+
   systematics = [getBackgroundSystematic(h1, h2,signals[0]) for h1,h2 in zip(signals,signals_randomBg)]
   
   background = [data.getHist('BgJtWeightBin',jetpt=False,isBg=True) for data in datasets]
@@ -99,14 +100,11 @@ def drawSignal(signals,systematics,names,colors,styles,jetPt):
   axs = axs.reshape(n_figs)
   if(n_figs == 2):
     pT = jetPt[start]
-    print(pT)
     axs[0].text(0.8,7,d['system'] +'\n'+  d['jettype'] +'\n'+ d['jetalg'] + '\n' + d['cut'] + '\n' + r'${:02d}\:\mathrm{{GeV}} < p_{{\mathrm{{T,jet}}}} < {:02d}\:\mathrm{{GeV}}$'.format(pT[0],pT[1]),fontsize = 11)
   else:
     axs[1].text(0.12,0.00002,d['system'] +'\n'+  d['jettype'] +'\n'+ d['jetalg'] + '\n' + d['cut'],fontsize = 11)
   for signal,system,name,color,j in zip(signals,systematics,names,colors,range(10)):
-    print("Plot {}".format(name))
     for jT,syst,pT,ax,i in zip(signal[start:],system[start:],jetPt[start:],axs[0:n_figs/2],range(0,9)):
-      print(pT)
       jT.SetMarkerColor(color)
       jT.SetMarkerStyle(styles[j])
       jT.SetLineColor(color)
@@ -123,11 +121,8 @@ def drawSignal(signals,systematics,names,colors,styles,jetPt):
       ax.set_ylim([1e-5,2e3]) #Set y-axis limits
       errorboxes = []
       for box in syst:
-        print(box)
         x1,x2,y1,y2,yc,error,ratio,ratioerror = box
 
-        print(x1)
-        print("{} {} {} {}".format(x1,y1,x2-x1,y2-y1))
         rect = Rectangle((x1,y1),x2-x1,y2-y1)
         errorboxes.append(rect)
       pc = PatchCollection(errorboxes, facecolor=colorsBox[j], alpha=0.5,edgecolor=colorsBox[j])

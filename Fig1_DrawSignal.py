@@ -3,11 +3,13 @@ from matplotlib.pyplot import box
 mpl_logger = logging.getLogger('matplotlib') 
 mpl_logger.setLevel(logging.WARNING) 
 import rootpy
+import os.path
 import defs
 import re
 import matplotlib
+from ROOT import TVectorT
 from rootpy.plotting import Canvas
-from rootpy.plotting import Legend
+from rootpy.plotting import Legend,Hist
 from rootpy.io import root_open
 from matplotlib.backends.backend_pdf import PdfPages
 import rootpy.plotting.root2matplotlib as rplt
@@ -16,23 +18,41 @@ import sys
 from dataset import *
 def main(): 
 
-  filename = "CF_pPb_legotrain/legotrain_CF_pPb_1839_20180613_LHC13bcde.root"
   start = 4
   end = 8
-
   n_figs = end-start
-  print("Number of figs: {}".format(n_figs))
-  print "Input file: "
-  print filename
-  Mixed_FullJets_R04 = datasetMixed("Full jets R=0.4",NFIN=0,range=(1,5),filename=filename,directory='AliJJetJtTask/AliJJetJtHistManager',directory2='AliJJetJtTask_kEMCEJE/AliJJetJtHistManager',color=2,style=24,rebin=2)
-  signal,jetPt = Mixed_FullJets_R04.getSubtracted('JetConeJtWeightBin','BgJtWeightBin',jetpt = True)
+  title = "Full jets R=0.4"
+  if(os.path.exists('RootFiles/Fig1.root')):
+    inFile = "Fig1.root"
+    inF = root_open(inFile,'r')
+    signal = [inF.Get("jTSignalJetPt{:02d}".format(i)) for i in range(8)]
+    jetPt = [(int(re.search( r'p_{T,jet} : ([\d]*)\.[\d] - ([\d]*).[\d]*',h.GetTitle(), re.M|re.I).group(1)),int(re.search( r'p_{T,jet} : ([\d]*)\.[\d] - ([\d]*).[\d]*',h.GetTitle(), re.M|re.I).group(2))) for h in signal] #Use regular expressions to extract jet pT range from histogram titles
 
+  else:
+    filename = "CF_pPb_legotrain/legotrain_CF_pPb_1839_20180613_LHC13bcde.root"
+
+  
+    print("Number of figs: {}".format(n_figs))
+    print "Input file: "
+    print filename
+    Mixed_FullJets_R04 = datasetMixed(title,NFIN=0,range=(1,5),filename=filename,directory='AliJJetJtTask/AliJJetJtHistManager',directory2='AliJJetJtTask_kEMCEJE/AliJJetJtHistManager',color=2,style=24,rebin=2)
+    signal,jetPt = Mixed_FullJets_R04.getSubtracted('JetConeJtWeightBin','BgJtWeightBin',jetpt = True)
+    
+    outFile = "Fig1.root"
+    outF = root_open(outFile,"w+")
+    for s,i in zip(signal,range(10)):
+      s.SetName("jTSignalJetPt{:02d}".format(i))
+      s.Write()
+    outF.Close()
+  
+  
+  
   n_rows = n_figs//4
   fig, axs = defs.makegrid(4,n_figs//4,xlog=True,ylog=True,d=d,shareY=True,figsize=(10,2.5))
   axs = axs.reshape(n_figs)
   axs[1].text(0.12,0.002,d['system'] +'\n'+  d['jettype'] +'\n'+ d['jetalg'] + '\n Jet Cone',fontsize = 7)
   for jT,pT,ax,i in zip(signal[start:],jetPt[start:],axs,range(0,9)):
-    plot = rplt.errorbar(jT,xerr=False,emptybins=False,axes=ax,label=Mixed_FullJets_R04.name(),fmt='o',fillstyle='none',ecolor='blue') #Plot jT histogram, 
+    plot = rplt.errorbar(jT,xerr=False,emptybins=False,axes=ax,label=title,fmt='o',fillstyle='none',ecolor='blue') #Plot jT histogram, 
     line = plot.get_children()[0]
     #line.set_markerfacecolor('none')
     #line.set_markeredgecolor('red')

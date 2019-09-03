@@ -4,6 +4,8 @@ mpl_logger.setLevel(logging.WARNING)
 import rootpy
 import defs
 import re
+import os.path
+
 import matplotlib
 from matplotlib import container
 from ROOT import TGraphErrors
@@ -59,16 +61,25 @@ def main():
   doWeight = 1
   mSize = 0.3
   iS = 0
-
-  f = root_open("errors_test.root", 'read')
-
-
-
   start = 4
-  errGraph = [f.Get('JetConeJtWeightBinNFin{:02d}JetPt{:02d}_Systematics'.format(iS,i)) for i in range(start,Njets)]  #Get jT histograms from file an array
-  hJtSignalGraph = [f.Get('JetConeJtWeightBinNFin{:02d}JetPt{:02d}_Statistics'.format(iS,i)) for i in range(start,Njets)]  #Get jT histograms from file an array
-  print(hJtSignalGraph)
-  
+
+  if(os.path.exists('RootFiles/Fig3.root')):
+    inFile = "RootFiles/Fig3.root"
+    inF = root_open(inFile,'r')
+    errGraph = [inF.Get("jTSignalJetPt_Syst{:02d}".format(ij)) for ij in range(4)]
+    hJtSignalGraph = [inF.Get("jTSignalJetPt_Stat{:02d}".format(ij)) for ij in range(4)]
+  else:
+    f = root_open("errors_test.root", 'read')
+    errGraph = [f.Get('JetConeJtWeightBinNFin{:02d}JetPt{:02d}_Systematics'.format(iS,i)) for i in range(start,Njets)]  #Get jT histograms from file an array
+    hJtSignalGraph = [f.Get('JetConeJtWeightBinNFin{:02d}JetPt{:02d}_Statistics'.format(iS,i)) for i in range(start,Njets)]  #Get jT histograms from file an array
+    outFile = "RootFiles/Fig3.root"
+    outF = root_open(outFile,"w+")
+    for err,signal,i in zip(errGraph,hJtSignalGraph,range(10)):
+      err.SetName("jTSignalJetPt_Syst{:02d}".format(i))
+      err.Write()
+      signal.SetName("jTSignalJetPt_Stat{:02d}".format(i))
+      signal.Write()
+    outF.Close()
   scaleInterval = 1
 
   ylow = 5e-6

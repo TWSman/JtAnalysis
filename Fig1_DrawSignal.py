@@ -7,7 +7,6 @@ import os.path
 import defs
 import re
 import matplotlib
-from ROOT import TVectorT
 from rootpy.plotting import Canvas
 from rootpy.plotting import Legend,Hist
 from rootpy.io import root_open
@@ -23,7 +22,7 @@ def main():
   n_figs = end-start
   title = "Full jets R=0.4"
   if(os.path.exists('RootFiles/Fig1.root')):
-    inFile = "Fig1.root"
+    inFile = "RootFiles/Fig1.root"
     inF = root_open(inFile,'r')
     signal = [inF.Get("jTSignalJetPt{:02d}".format(i)) for i in range(8)]
     jetPt = [(int(re.search( r'p_{T,jet} : ([\d]*)\.[\d] - ([\d]*).[\d]*',h.GetTitle(), re.M|re.I).group(1)),int(re.search( r'p_{T,jet} : ([\d]*)\.[\d] - ([\d]*).[\d]*',h.GetTitle(), re.M|re.I).group(2))) for h in signal] #Use regular expressions to extract jet pT range from histogram titles
@@ -31,7 +30,6 @@ def main():
   else:
     filename = "CF_pPb_legotrain/legotrain_CF_pPb_1839_20180613_LHC13bcde.root"
 
-  
     print("Number of figs: {}".format(n_figs))
     print "Input file: "
     print filename

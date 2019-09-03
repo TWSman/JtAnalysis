@@ -6,6 +6,7 @@ from matplotlib import container
 import rootpy
 import defs
 import re
+import os.path
 import matplotlib
 from rootpy.plotting import Canvas
 from rootpy.plotting import Legend
@@ -75,27 +76,30 @@ def main():
   logx = 1
   doWeight = 1
   iS = 0
-
-  f = root_open("errors_test.root", 'read')
-
-  gGausRMS = f.Get("gGausRMS{:02d}".format(iS))
-  gGausRMSerr = f.Get("gGausRMS{:02d}_Systematics".format(iS))
-  gGausYield = f.Get("gGausYield{:02d}".format(iS))
-  gGausYielderr = f.Get("gGausYield{:02d}_Systematics".format(iS))
-  gGammaRMS = f.Get("gGammaRMS{:02d}".format(iS))
-  gGammaRMSerr = f.Get("gGammaRMS{:02d}_Systematics".format(iS))
-  gGammaYield = f.Get("gGammaYield{:02d}".format(iS))
-  gGammaYielderr = f.Get("gGammaYield{:02d}_Systematics".format(iS))
-  
   start = 4
   iS = 0
-  stats = [None if ij < start else f.Get("JetConeJtWeightBinNFin{:02d}JetPt{:02d}_Statistics".format(iS,ij)) for ij in range(8)]
-  fits = [None if ij < start else f.Get("JetConeJtWeightBinNFin{:02d}JetPt{:02d}_FitFunction".format(iS,ij)) for ij in range(8)]
-  print(fits)
+  
+  if(os.path.exists('RootFiles/Fig2.root')):
+    inFile = "RootFiles/Fig2.root"
+    inF = root_open(inFile,'r')
+    stats = [None if ij < start else inF.Get("jTSignalJetPt_Stat{:02d}".format(ij)) for ij in range(8)]
+    fits = [None if ij < start else inF.Get("jTSignalJetPt_fit{:02d}".format(ij)) for ij in range(8)]
+  else:
+    f = root_open("errors_test.root", 'read')
+  
 
-
-  print(stats)
-
+    stats = [None if ij < start else f.Get("JetConeJtWeightBinNFin{:02d}JetPt{:02d}_Statistics".format(iS,ij)) for ij in range(8)]
+    fits = [None if ij < start else f.Get("JetConeJtWeightBinNFin{:02d}JetPt{:02d}_FitFunction".format(iS,ij)) for ij in range(8)]
+    outFile = "Fig2.root"
+    outF = root_open(outFile,"w+")
+    for s,f,i in zip(stats,fits,range(10)):
+      if(s):
+        s.SetName("jTSignalJetPt_Stat{:02d}".format(i))
+        s.Write()
+        f.SetName("jTSignalJetPt_fit{:02d}".format(i))
+        f.Write()
+    outF.Close()
+    
   n_figs = 2
 
   ratios = []

@@ -34,6 +34,8 @@ d = dict(
 labelsize= 15
 styles = [23,24,25,27,30]
 colors = [1,2,3,4,7]
+colorsBox = ['k','r','g','b']
+
 Rebin = 2
 boxwidth = 2.5
 xlow = 0.1
@@ -84,20 +86,26 @@ def main():
     inF = root_open(inFile,'r')
     stats = [None if ij < start else inF.Get("jTSignalJetPt_Stat{:02d}".format(ij)) for ij in range(8)]
     fits = [None if ij < start else inF.Get("jTSignalJetPt_fit{:02d}".format(ij)) for ij in range(8)]
+    errGraph = [None if ij < start else inF.Get("jTSignalJetPt_syst{:02d}".format(ij)) for ij in range(8)]
+
   else:
     f = root_open("errors_test.root", 'read')
   
 
     stats = [None if ij < start else f.Get("JetConeJtWeightBinNFin{:02d}JetPt{:02d}_Statistics".format(iS,ij)) for ij in range(8)]
     fits = [None if ij < start else f.Get("JetConeJtWeightBinNFin{:02d}JetPt{:02d}_FitFunction".format(iS,ij)) for ij in range(8)]
-    outFile = "Fig2.root"
+    errGraph = [None if ij < start else f.Get('JetConeJtWeightBinNFin{:02d}JetPt{:02d}_Systematics'.format(iS,ij)) for ij in range(8)]  #Get jT histograms from file an array
+
+    outFile = "RootFiles/Fig2.root"
     outF = root_open(outFile,"w+")
-    for s,f,i in zip(stats,fits,range(10)):
+    for s,f,e,i in zip(stats,fits,errGraph,range(10)):
       if(s):
         s.SetName("jTSignalJetPt_Stat{:02d}".format(i))
         s.Write()
         f.SetName("jTSignalJetPt_fit{:02d}".format(i))
         f.Write()
+        e.SetName("jTSignalJetPt_syst{:02d}".format(i))
+        e.Write()
     outF.Close()
     
   n_figs = 2
@@ -105,7 +113,7 @@ def main():
   ratios = []
   xs2 = []
 
-  for jT,pT,ij,fit in zip(stats[start:],jetPt[start:],range(start,9),fits[start:]):
+  for jT,pT,ij,fit,jT_sys in zip(stats[start:],jetPt[start:],range(start,9),fits[start:],errGraph[start:]):
     color = colors[1]
     fig,axs = defs.makeRatio(xlog=True,ylog=True,d=d,shareY=False,figsize = (5,6),grid=False)
     axs = axs.reshape(n_figs)
@@ -136,6 +144,25 @@ def main():
     line.set_markerfacecolor('none')
     line.set_color(color)
 
+    errorboxes = []
+    ratioBoxes = []
+
+    n = jT_sys.GetN()
+    xs = jT_sys.GetX()
+    ys = jT_sys.GetY()
+    xerrs = jT_sys.GetEX()
+    yerrs = jT_sys.GetEY()
+    for x in (xs,ys,xerrs,yerrs):
+      x.SetSize(n)
+    for x, y, xe, ye in zip(xs, ys, xerrs, yerrs):
+      rect = Rectangle((x - xe, (y - ye)), xe*2,ye*2)
+      errorboxes.append(rect)
+      rect2 = Rectangle((x-xe, (y-ye)/fit.Eval(x)),xe*2,ye/fit.Eval(x)*2)
+      ratioBoxes.append(rect2)
+    pc = PatchCollection(errorboxes, facecolor='r', alpha=0.5,edgecolor='None')
+    ax.add_collection(pc)
+
+
     if(n_figs > 2):
       ax.text(0.5,1e2,r'${:02d}\:\mathrm{{GeV}} < p_{{\mathrm{{T,jet}}}} < {:02d}\:\mathrm{{GeV}}$'.format(pT[0],pT[1])) 
     ax.set_xlim([xlow,xhigh]) #Set x-axis limits
@@ -149,6 +176,8 @@ def main():
     y2e = []
     xs=[]
     ex = []
+    
+    
     for ii in range(NC):
       jT.GetPoint(ii,x_,y1)
       xe = jT.GetErrorX(ii)
@@ -165,6 +194,21 @@ def main():
     #ratio = jT.Clone()
     ratio= Graph(NC)
 
+      
+    """
+           ratioBoxes = []
+        N = div.GetNbinsX()
+        for box,i in zip(syst,range(1,N)):
+          y = div.GetBinContent(i)
+          x1,x2,y1,y2,yc,error,ratio,ratioerror = box
+          rect = Rectangle((x1,ratio-ratioerror),x2-x1,ratioerror*2)
+          ratioBoxes.append(rect)
+        
+        pc = PatchCollection(ratioBoxes, facecolor=colorsBox[j], alpha=0.5,edgecolor=colorsBox[j])
+        ax.add_collection(pc)
+    
+    """
+
     print(xs[::5])
     print(y2[::5])
     print(ex[::5])
@@ -175,6 +219,8 @@ def main():
     ratios.append(ratio)
     print(ratio)
     ax = axs[1]
+    pc2 = PatchCollection(ratioBoxes, facecolor='r', alpha=0.5,edgecolor='None')
+    ax.add_collection(pc2)
   #for ratio,pT,ax,color in zip(ratios,jetPt[start:],axs[n_figs/2:n_figs+1],colors[1:]):
     
     ratio.SetMarkerColor(color)

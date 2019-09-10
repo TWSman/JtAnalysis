@@ -110,7 +110,7 @@ def drawSignal(signals,systematics,names,colors,styles,jetPt):
   axs = axs.reshape(n_figs)
   if(n_figs == 2):
     pT = jetPt[start]
-    axs[0].text(0.8,7,d['system'] +'\n'+  d['jettype'] +'\n'+ d['jetalg'] + '\n' + d['cut'] + '\n' + r'${:02d}\:\mathrm{{GeV}} < p_{{\mathrm{{T,jet}}}} < {:02d}\:\mathrm{{GeV}}$'.format(pT[0],pT[1]),fontsize = 11)
+    axs[0].text(0.8,7,d['system'] +'\n'+  d['jettype'] +'\n'+ d['jetalg'] + '\n' + d['cut'] + '\n' + r'${:02d}\: < p_{{\mathrm{{T,jet}}}} < {:02d}\:\mathrm{{GeV}}/c$'.format(pT[0],pT[1]),fontsize = 11)
   else:
     axs[1].text(0.12,0.00002,d['system'] +'\n'+  d['jettype'] +'\n'+ d['jetalg'] + '\n' + d['cut'],fontsize = 11)
   for signal,system,name,color,j in zip(signals,systematics,names,colors,range(10)):
@@ -126,7 +126,7 @@ def drawSignal(signals,systematics,names,colors,styles,jetPt):
         #line.set_markeredgecolor(color)
         line.set_color(color)
       if(n_figs > 2):
-        ax.text(0.5,1e2,r'${:02d}\:\mathrm{{GeV}} < p_{{\mathrm{{T,jet}}}} < {:02d}\:\mathrm{{GeV}}$'.format(pT[0],pT[1])) 
+        ax.text(0.5,1e2,r'${:02d}\: < p_{{\mathrm{{T,jet}}}} < {:02d}\:\mathrm{{GeV}}/c$'.format(pT[0],pT[1])) 
       ax.set_xlim([xlow,10]) #Set x-axis limits
       ax.set_ylim([1e-5,2e3]) #Set y-axis limits
       errorboxes = []

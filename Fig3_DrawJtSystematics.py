@@ -105,7 +105,7 @@ def main():
     h.SetMarkerColor(colors[ij-start])
     h.SetLineColor(colors[ij-start])
     h.SetMarkerStyle(styles[ij-start])
-    label = r'${:02d}\:\mathrm{{GeV}} < p_{{\mathrm{{T,jet}}}} < {:02d}\:\mathrm{{GeV}} \times 10^{}$'.format(pT[0],pT[1],power)
+    label = r'${:02d}\: < p_{{\mathrm{{T,jet}}}} < {:02d}\:\mathrm{{GeV}}/c \left(\times 10^{}\right)$'.format(pT[0],pT[1],power)
 
     plot = rplt.errorbar(h,xerr=False,emptybins=False,axes=ax,label=label,fmt='+') #Plot jT histogram, 
     line = plot.get_children()[0]

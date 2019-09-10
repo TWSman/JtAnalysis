@@ -117,7 +117,7 @@ def main():
     color = colors[1]
     fig,axs = defs.makeRatio(xlog=True,ylog=True,d=d,shareY=False,figsize = (5,6),grid=False)
     axs = axs.reshape(n_figs)
-    axs[0].text(0.8,7,d['system'] +'\n'+  d['jettype'] +'\n'+ d['jetalg'] + '\n' + d['cut'] + '\n' + r'${:02d}\:\mathrm{{GeV}}/c < p_{{\mathrm{{T,jet}}}} < {:02d}\:\mathrm{{GeV}}/c$'.format(pT[0],pT[1]),fontsize = 10)
+    axs[0].text(0.8,7,d['system'] +'\n'+  d['jettype'] +'\n'+ d['jetalg'] + '\n' + d['cut'] + '\n' + r'${:02d}\: < p_{{\mathrm{{T,jet}}}} < {:02d}\:\mathrm{{GeV}}/c$'.format(pT[0],pT[1]),fontsize = 10)
     ax = axs[0]
     xs = np.arange(0,xhigh,0.01).tolist()
     for ii in range(6):

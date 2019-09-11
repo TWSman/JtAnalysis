@@ -2,6 +2,7 @@ import logging
 from matplotlib.pyplot import box
 mpl_logger = logging.getLogger('matplotlib') 
 mpl_logger.setLevel(logging.WARNING) 
+import os.path
 
 import rootpy
 import defs
@@ -43,7 +44,7 @@ B5start = [1.5,1.5,4.5,4.5,1.5,1.5,2.88,1.62,1.62]
 peakstart = 0.5
 peaklow = 0.3
 peakhigh = 0.8
-Rs = (0.3,0.4,0.5,-0.4)
+Rs = (0.3,0.4,0.5)
 
 labelsize= 15
 styles = [20,24,25,27,30]
@@ -51,32 +52,25 @@ colors = [1,2,3,4,7,6]
 
 
 def main(): 
-  print 'Number of arguments: ', len(sys.argv), 'arguments.'
-  print 'Argument list:',str(sys.argv)
-  filename = sys.argv[1]
-  if len(sys.argv) > 2:
-    fileData = sys.argv[2]
-  else:
-    fileData = None
-  print "Input file: "
-  print filename
+
   Njets = 9
 
-  if fileData is not None:
-    fD = root_open(fileData, 'read')
-    iS = 0
-    gGausRMSData = fD.Get("gGausRMS{:02d}".format(iS))
-    gGausRMSerrData = fD.Get("gGausRMS{:02d}_Systematics".format(iS))
-    gGausYieldData = fD.Get("gGausYield{:02d}".format(iS))
-    gGausYielderrData = fD.Get("gGausYield{:02d}_Systematics".format(iS))
-    gGammaRMSData = fD.Get("gGammaRMS{:02d}".format(iS))
-    gGammaRMSerrData = fD.Get("gGammaRMS{:02d}_Systematics".format(iS))
-    gGammaYieldData = fD.Get("gGammaYield{:02d}".format(iS))
-    gGammaYielderrData = fD.Get("gGammaYield{:02d}_Systematics".format(iS))
-    
-  with root_open(filename,'read') as f:
+  if(os.path.exists('RootFiles/Fig7.root')):
+    inFile = "RootFiles/Fig7.root"
+    inF = root_open(inFile,'r')
+    FullJets_gausRMS = [inF.Get("FullJets_gausRMS_R{:02d}".format(int(R*10))) for R in Rs]
+    FullJets_gammaRMS = [inF.Get("FullJets_gammaRMS_R{:02d}".format(int(R*10))) for R in Rs]
     FullJets_jT = []
-    colors = (1,2,3)
+    for R in Rs:
+      h = [inF.Get("jTSignalJetPt{:02d}_R{:02d}".format(ij,int(R*10))) for ij in range(8)]
+      FullJets_jT.append(h)
+    jetPt = [(int(re.search( r'p_{T,jet} : ([\d]*)\.[\d] - ([\d]*).[\d]*',h.GetTitle(), re.M|re.I).group(1)),int(re.search( r'p_{T,jet} : ([\d]*)\.[\d] - ([\d]*).[\d]*',h.GetTitle(), re.M|re.I).group(2))) for h in FullJets_jT[0]] #Use regular expressions to extract jet pT range from histogram titles
+    jetPtCenter = array('d',[(a+b)/2.0 for a,b in jetPt])
+    jetPtErrors = array('d',[(b-a)/2.0 for a,b in jetPt])
+  else:
+    filename = "CF_pPb_MC_legotrain/legotrain_610_20181010-1926_LHCb4_fix_CF_pPb_MC_ptHardMerged.root"
+    f = root_open(filename,'read')
+    FullJets_jT = []
     for iF,c in zip((8,6,7),colors):
       jT = [f.get('AliJJetJtTask/AliJJetJtHistManager/JetConeJtWeightBin/JetConeJtWeightBinNFin{:02d}JetPt{:02d}'.format(iF,ij)) for ij in range(Njets)]
       bgJt = [f.get('AliJJetJtTask/AliJJetJtHistManager/BgJtWeightBin/BgJtWeightBinNFin{:02d}JetPt{:02d}'.format(iF,ij)) for ij in range(Njets)]
@@ -99,9 +93,7 @@ def main():
     jetPt = [(int(re.search( r'p_{T,jet} : ([\d]*)\.[\d] - ([\d]*).[\d]*',h.GetTitle(), re.M|re.I).group(1)),int(re.search( r'p_{T,jet} : ([\d]*)\.[\d] - ([\d]*).[\d]*',h.GetTitle(), re.M|re.I).group(2))) for h in FullJets_jT[0]] #Use regular expressions to extract jet pT range from histogram titles
     jetPtCenter = array('d',[(a+b)/2.0 for a,b in jetPt])
     jetPtErrors = array('d',[(b-a)/2.0 for a,b in jetPt])
-    print(jetPt,type(jetPt))
-    print(jetPtCenter,type(jetPtCenter))
-    print(jetPtErrors,type(jetPtErrors))
+
     
     FullJets_fit = []
     FullJets_parameters = []
@@ -154,113 +146,77 @@ def main():
       FullJets_gammaYield.append(gammaYieldg)
       FullJets_fit.append(fits)
       FullJets_parameters.append(parameters)
-    
-    if fileData is not None:
-      FullJets_gausRMS.append(gGausRMSData)
-      FullJets_gammaRMS.append(gGammaRMSData)
-      FullJets_gausYield.append(gGausYieldData)
-      FullJets_gammaYield.append(gGammaYieldData)
 
-    fig, axs = plt.subplots(2,1,figsize = (7,7))
-    ax = axs[0]
-    ax.set_xlim([0.1,15])
-    ax.set_ylim([5e-6,2e3])
-    ax.set_xlabel(r'$j_{T}\left(GeV/c\right)$',fontsize=labelsize)
-    ax.set_ylabel(r'$\frac{1}{N_{jets}}\frac{dN}{j_{T}dj_{T}}$',fontsize=labelsize)
-    ratios = []
-    ax.set_xscale('log')
-    ax.set_yscale('log')
-    for h,c,R in zip(FullJets_jT,(0,1,2,3),Rs):
-      h[6].SetMarkerColor(colors[c])
-      h[6].SetMarkerStyle(styles[c])
-      h[6].SetLineColor(colors[c])
-      ratio = h[6].Clone()
-      ratio.Divide(FullJets_jT[1][6])
-      ratios.append(ratio)
-      plot = rplt.errorbar(h[6],xerr=False,emptybins=False,label = 'R = {:.1f}'.format(R),axes=ax,fmt='+')    
-      line = plot.get_children()[0]
-      line.set_markersize(mSize)
-      if(styles[c] > 23):
-        line.set_markerfacecolor('none')
-        #line.set_markeredgecolor(color)
-        line.set_color(colors[c])
+    outFile = "Python/RootFiles/Fig7.root"
+    outF = root_open(outFile,"w+")
+    for h1,h2,jT,R in zip(FullJets_gausRMS,FullJets_gammaRMS,FullJets_jT,Rs):
+      h1.SetName("FullJets_gausRMS_R{:02d}".format(int(R*10)))
+      h1.Write()
+      h2.SetName("FullJets_gammaRMS_R{:02d}".format(int(R*10)))
+      h2.Write()
+      for h,i in zip(jT,range(10)):
+        h.SetName("jTSignalJetPt{:02d}_R{:02d}".format(i,int(R*10)))
+        h.Write()
+    outF.Close()
 
-    ax.text(0.15,0.001,'Pythia \n Full Jets\n' + r'Anti-$k_T$' + '\n' + r'$p_{{T,\mathrm{{jet}}}}$: {:02d}-{:02d} GeV/c'.format(60,80) ,fontsize = 10)
-    handles, labels = ax.get_legend_handles_labels()
-    handles = [container.ErrorbarContainer(h,has_xerr=False,has_yerr=True) if isinstance(h, container.ErrorbarContainer) else h for h in handles]
-    ax.legend(handles,labels,loc = 'upper right',numpoints=1,prop={'family': 'monospace'})
-    #ax.legend(loc = 'upper right')
-    ax.set_xlim([0.1,15])
-    ax.set_ylim([5e-6,2e3])
-    ax.grid(True)
-    
-    ax = axs[1]
-    ax.grid(True)
-    ax.set_xlabel(r'$j_{T}\left[GeV\right]$',fontsize=labelsize)
-    ax.set_ylabel('Ratio',fontsize=labelsize) #Add x-axis labels for bottom row
-    for ratio,c in zip(ratios,(0,1,2,3)):
-      #ratio.SetMarkerColor(c)
-      #ratio.SetMarkerStyle(24)
-      plot = rplt.errorbar(ratio,xerr = False,emptybins=False,axes=ax)
-      line = plot.get_children()[0]
-      line.set_markersize(mSize)
-      if(styles[c] > 23):
-        line.set_markerfacecolor('none')
-        #line.set_markeredgecolor(color)
-        line.set_color(colors[c])
-    ax.set_xlim([0.1,15])
-    ax.set_ylim([0.1,3])  
-    ax.set_xscale('log')
-    plt.tight_layout()
-    plt.subplots_adjust(wspace =0,hspace=0) #Set space between subfigures to 0  
-    plt.savefig("PythonFigures/RcomparisonSignalPt6080.pdf".format(file),format='pdf') #Save figure
+
+  fig, axs = plt.subplots(2,1,figsize = (7,7))
+  ax = axs[0]
+  ax.set_xlim([0.1,15])
+  ax.set_ylim([5e-6,2e3])
+  ax.set_xlabel(r'$j_{T}\left(GeV/c\right)$',fontsize=labelsize)
+  ax.set_ylabel(r'$\frac{1}{N_{jets}}\frac{dN}{j_{T}dj_{T}}$',fontsize=labelsize)
+  ratios = []
+  ax.set_xscale('log')
+  ax.set_yscale('log')
+  for h,c,R in zip(FullJets_jT,(0,1,2,3),Rs):
+    h[6].SetMarkerColor(colors[c])
+    h[6].SetMarkerStyle(styles[c])
+    h[6].SetLineColor(colors[c])
+    ratio = h[6].Clone()
+    ratio.Divide(FullJets_jT[1][6])
+    ratios.append(ratio)
+    plot = rplt.errorbar(h[6],xerr=False,emptybins=False,label = 'R = {:.1f}'.format(R),axes=ax,fmt='+')    
+    line = plot.get_children()[0]
+    line.set_markersize(mSize)
+    if(styles[c] > 23):
+      line.set_markerfacecolor('none')
+      #line.set_markeredgecolor(color)
+      line.set_color(colors[c])
+
+  ax.text(0.15,0.001,'Pythia \n Full Jets\n' + r'Anti-$k_T$' + '\n' + r'$p_{{T,\mathrm{{jet}}}}$: {:02d}-{:02d} GeV/c'.format(60,80) ,fontsize = 10)
+  handles, labels = ax.get_legend_handles_labels()
+  handles = [container.ErrorbarContainer(h,has_xerr=False,has_yerr=True) if isinstance(h, container.ErrorbarContainer) else h for h in handles]
+  ax.legend(handles,labels,loc = 'upper right',numpoints=1)
+  #ax.legend(loc = 'upper right')
+  ax.set_xlim([0.1,15])
+  ax.set_ylim([5e-6,2e3])
+  ax.grid(True)
   
-    plt.show() #Draw figure on screen
+  ax = axs[1]
+  ax.grid(True)
+  ax.set_xlabel(r'$j_{T}\left[GeV\right]$',fontsize=labelsize)
+  ax.set_ylabel('Ratio',fontsize=labelsize) #Add x-axis labels for bottom row
+  for ratio,c in zip(ratios,(0,1,2,3)):
+    #ratio.SetMarkerColor(c)
+    #ratio.SetMarkerStyle(24)
+    plot = rplt.errorbar(ratio,xerr = False,emptybins=False,axes=ax)
+    line = plot.get_children()[0]
+    line.set_markersize(mSize)
+    if(styles[c] > 23):
+      line.set_markerfacecolor('none')
+      #line.set_markeredgecolor(color)
+      line.set_color(colors[c])
+  ax.set_xlim([0.1,15])
+  ax.set_ylim([0.1,3])  
+  ax.set_xscale('log')
+  plt.tight_layout()
+  plt.subplots_adjust(wspace =0,hspace=0) #Set space between subfigures to 0  
+  plt.savefig("PythonFigures/RcomparisonSignalPt6080.pdf".format(file),format='pdf') #Save figure
 
-    
-    drawWithErrors2Combined(FullJets_gausRMS,FullJets_gammaRMS,15,500,1,0,1.65,0,r'jet $p_T (GeV/c)$',r'$\sqrt{\left<j_T^2\right>}$','Pythia','PythonFigures/RcomparisonRMS',separate=True)
-    return
-    drawWithErrors2Combined(FullJets_gausYield,FullJets_gammaYield,15,500,1,0,10,0,r'jet $p_T$',r'Yield','Pythia','PythonFigures/RcomparisonYield',)
-
-    ratios = []
-    for hists in FullJets_jT:
-        if hists is not None:
-            ratio = []
-            for h,true in zip(hists,FullJets_jT[1]):
-                h2 = h.Clone()
-                h2.Divide(true)
-                ratio.append(h2)
-        else:
-            ratio = None
-        ratios.append(ratio)
-
-    fig, axs = defs.makegrid(4,2,xlog=True,ylog=False,d=d,shareY=False)
-    axs = axs.reshape(8)
-    axs[4].set_ylabel("Ratio to R = 0.4",fontsize=labelsize)
-    axs[7].set_ylabel("Ratio to R = 0.4",fontsize=labelsize)
-    
-    axs[1].text(0.02,0.005,'Pythia\n' r'pPb $\sqrt{s_{NN}} = 5.02 \mathrm{TeV}$' '\n Full jets \n' r'Anti-$k_T$' ,fontsize=7) #Add text to second subfigure, first parameters are coordinates in the drawn scale/units
-    for hists,R in zip(FullJets_jT,Rs):
-      for jT,ax,i,pT in zip(hists[2:],axs[0:4],range(0,9),jetPt[2:]):
-        rplt.errorbar(jT,emptybins=False,xerr=False,label="R = {:.1f}".format(R),axes=ax,fmt='o') #Plot jT histogram, 
-        ax.text(0.3,1e2,r'$p_{{T,\mathrm{{jet}}}}$:''\n'r' {:02d}-{:02d} GeV'.format(pT[0],pT[1])) 
-        ax.set_xlim([0.01,20]) #Set x-axis limits
-        ax.set_ylim([5e-4,2e3]) #Set y-axis limits
-        ax.set_yscale('log')
-        ax.grid(True)
-    
-    for ratio in ratios:
-      for r,ax in zip(ratio[2:],axs[4:8]):
-        rplt.errorbar(r,axes=ax,emptybins=False,xerr=False)
-        ax.set_xlim([0.01,20])
-        ax.set_ylim([0.1,3])
-        ax.grid(True)
-    
-    axs[0].legend(loc = 'lower left')
-        
-    plt.savefig("PythonFigures/RcomparisonSignal.pdf",format='pdf') #Save figure
-    plt.show() #Draw figure on screen
-    
+  plt.show() #Draw figure on screen
+  drawWithErrors2Combined(FullJets_gausRMS,FullJets_gammaRMS,15,500,1,0,1.65,0,r'jet $p_T (GeV/c)$',r'$\sqrt{\left<j_T^2\right>}$','Pythia','PythonFigures/RcomparisonRMS',separate=True)
+  
 
 
 
@@ -299,6 +255,7 @@ def drawWithErrors2Combined(hists,hists2,xlow,xhigh,logx,ylow,yhigh,ylog,xTitle,
     h.SetLineColor(colors[c])
     h2.SetMarkerColor(colors[c])
     h2.SetMarkerStyle(styles[c])
+    h2.SetLineColor(colors[c])
     ratios1.append(grrDivide(h, hists[1]))
     ratios2.append(grrDivide(h2, hists2[1]))
     if(separate):
@@ -343,7 +300,10 @@ def drawWithErrors2Combined(hists,hists2,xlow,xhigh,logx,ylow,yhigh,ylog,xTitle,
   else:
     axs[0].text(100,(yhigh-ylow)/3.0+ylow,title + '\n' + d['system'] +'\n'+  d['jettype'] + '\n' + r'Anti-$k_T$',fontsize = 10)
    
-  axs[0].legend(loc = 'upper left')
+  #axs[0].legend(loc = 'upper left')
+  handles, labels = axs[0].get_legend_handles_labels()
+  handles = [container.ErrorbarContainer(h,has_xerr=False,has_yerr=True) if isinstance(h, container.ErrorbarContainer) else h for h in handles]
+  axs[0].legend(handles,labels,loc = 'upper left',numpoints=1)
   if(separate):
     for ax in axs[0:2]:
       ax.set_xlim([xlow,xhigh])

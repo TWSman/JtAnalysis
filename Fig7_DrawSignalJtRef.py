@@ -1,3 +1,7 @@
+import logging
+from matplotlib.pyplot import box
+mpl_logger = logging.getLogger('matplotlib') 
+mpl_logger.setLevel(logging.WARNING) 
 import rootpy
 import defs
 import re
@@ -15,8 +19,9 @@ from ROOT import TF1,TMath,TGraphErrors
 import ROOT
 from array import array
 from ctypes import c_int
+from matplotlib import container
 
-Njets = 6
+Njets = 8
 B1low = 0.1
 B1start = [0.15,0.15,0.17,0.18,0.15,0.15,0.21,0.15,0.15]
 B1high = 0.5
@@ -38,8 +43,10 @@ peakstart = 0.5
 peaklow = 0.3
 peakhigh = 0.8
 Rs = (0.3,0.4,0.5,-0.4)
+styles = [23,24,25,27,30]
 
 labelsize= 15
+mSize = 6
 
 
 def main(): 
@@ -51,20 +58,23 @@ def main():
     start = int(sys.argv[3])
     end = int(sys.argv[4])
   else:
-    start = 1
+    start = 2
     end = 6
   n_figs = end-start
   print("Number of figs: {}".format(n_figs))
   print "Input file: "
   print filename
-  FullJets_R04 = dataset('Full jets R=0.4',NFIN=0,range=(start,end),filename=filename,directory='AliJJetJtTask/AliJJetJtHistManager',color=2,style=24,rebin=2)
-  #Mixed_FullJets_R04 = datasetMixed("Full jets R=0.4",NFIN=0,range=5,filename=filename,directory='AliJJetJtTask/AliJJetJtHistManager',directory2='AliJJetJtTask_kEMCEJE/AliJJetJtHistManager',color=2,style=24,rebin=2)
+  #FullJets_R04 = dataset('Full jets R=0.4',NFIN=0,range=(start,end),filename=filename,directory='AliJJetJtTask/AliJJetJtHistManager',color=2,style=24,rebin=2)
+  Mixed_FullJets_R04 = datasetMixed("Full jets R=0.4",NFIN=0,range=(1,5),filename=filename,directory='AliJJetJtTask/AliJJetJtHistManager',directory2='AliJJetJtTask_kEMCEJE/AliJJetJtHistManager',color=2,style=24,rebin=2)
   #signal,jetPt = FullJets_R04.getHist('JtWeightBin',jetpt = True)
   #signal2 = FullJets_R04.getHist('JtWeightLeadingRefBin',jetpt=False)
-  compareHistsWithRatio(FullJets_R04,['JtWeightBin','JtWeightLeadingRefBin','JtWeightLeadingRefBin','JtWeightLeadingRefBin','JtWeightLeadingRefBin'],['Jet axis ref.','leading ref. (xlong 0.0-0.2)','leading ref. (xlong 0.2-0.4)','leading ref. (xlong 0.4-0.6)','leading ref. (xlong 0.6-1.0)'],step=1,extras=['','Xlong00','Xlong01','Xlong02','Xlong03'])
+  #compareHistsWithRatio(FullJets_R04,['JtWeightBin','JtWeightLeadingRefBin','JtWeightLeadingRefBin','JtWeightLeadingRefBin','JtWeightLeadingRefBin'],['Jet axis ref.','leading ref. (xlong 0.0-0.2)','leading ref. (xlong 0.2-0.4)','leading ref. (xlong 0.4-0.6)','leading ref. (xlong 0.6-1.0)'],step=1,extras=['','Xlong00','Xlong01','Xlong02','Xlong03'])
+  compareHistsWithRatio(Mixed_FullJets_R04,['JtWeightBin','JtWeightLeadingRefBin','JtWeightLeadingRefBin'],['Jet axis ref.','leading ref. (xlong 0.0-0.2)','leading ref. (xlong 0.2-0.4)'],step=1,start=1,extras=['','Xlong00','Xlong01'])
   plt.savefig("PythonFigures/JetVsLeadingRefConst.pdf",format='pdf') #Save figure
   plt.show()
-  sets = compareHistsWithRatio(FullJets_R04,['JetConeJtWeightBin','JetConeJtWeightLeadingRefBin','JetConeJtWeightLeadingRefBin','JetConeJtWeightLeadingRefBin','JetConeJtWeightLeadingRefBin'],['Jet axis ref.','leading ref.(xlong 0.0-0.2)','leading ref.(xlong 0.2-0.4)','leading ref.(xlong 0.4-0.6)','leading ref. (xlong 0.6-1.0)'],step=1,extras=['','Xlong00','Xlong01','Xlong02','Xlong03'])
+  sets = compareHistsWithRatio(Mixed_FullJets_R04,['JetConeJtWeightBin','JetConeJtWeightLeadingRefBin','JetConeJtWeightLeadingRefBin','JetConeJtWeightLeadingRefBin','JetConeJtWeightLeadingRefBin'],['Jet axis ref.','leading ref.(xlong 0.0-0.2)','leading ref.(xlong 0.2-0.4)','leading ref.(xlong 0.4-0.6)','leading ref. (xlong 0.6-1.0)'],step=1,extras=['','Xlong00','Xlong01','Xlong02','Xlong03'])
+  #sets = compareHistsWithRatio(FullJets_R04,['JetConeJtWeightBin','JetConeJtWeightLeadingRefBin','JetConeJtWeightLeadingRefBin'],['Jet axis ref.','leading ref.(xlong 0.0-0.2)','leading ref.(xlong 0.2-0.4)'],step=1,start=1,extras=['','Xlong00','Xlong01'])
+
   plt.savefig("PythonFigures/JetVsLeadingRefJetCone.pdf",format='pdf') #Save figure
   plt.show()
   
@@ -145,7 +155,7 @@ def main():
   print(jetPtCenter[2:])
   
   drawWithErrors2Combined(FullJets_gausRMS,FullJets_gammaRMS,["Jet ref.","Leading ref.","Leading ref.(xlong 0.0-0.2)","Leading ref.(xlong 0.2-0.4)","Leading ref.(xlong 0.4-0.6)"],15,500,1,0,1.85,0,r'jet $p_T$',r'$\sqrt{\left<j_T^2\right>}$','Pythia','PythonFigures/JetVsLeadingRefJetConeFits')
-  return
+  
 
   if(separate > 0):
     fig = plt.figure(1)
@@ -166,21 +176,53 @@ def main():
   else:
     n_rows = n_figs//4
     print(n_rows)
-    fig, axs = defs.makegrid(4,n_figs//4,xlog=True,ylog=True,d=d,shareY=True,figsize=(10,5))
-    axs = axs.reshape(n_figs)
-    axs[1].text(0.12,0.002,d['system'] +'\n'+  d['jettype'] +'\n'+ d['jetalg'] + '\n Jet Cone',fontsize = 7)
-    for jT,jT2,pT,ax,i in zip(signal[start:],signal2[start:],jetPt[start:],axs,range(0,9)):
+    fig, axs = defs.makegrid(4,2,xlog=True,ylog=True,d=d,shareY=False,figsize=(10,5))
+    axs = axs.reshape(8)
+    #axs[1].text(0.12,0.002,d['system'] +'\n'+  d['jettype'] +'\n'+ d['jetalg'] + '\n Jet Cone',fontsize = 7)
+    ratios = []
+    for jT,jT2,pT,ax,i in zip(JtJet[start:],JtLeading[start:],jetPt[start:],axs[0:4],range(0,9)):
       jT.SetMarkerColor(1)
+      jT.SetMarkerStyle(24)
+      jT.SetLineColor(1)
+      #jT.SetMarkerSize(mSize)
       jT2.SetMarkerColor(2)
+      jT2.SetMarkerStyle(25)
+      #jT2.SetMarkerSize(mSize)
+      jT2.SetLineColor(2)
+      ratio = jT2.Clone()
+      ratio.Divide(jT)
+      ratios.append(ratio)
       plot = rplt.errorbar(jT,xerr=False,emptybins=False,axes=ax,label="Jet axis reference",fmt='o',fillstyle='none',ecolor='black') #Plot jT histogram, 
+      line = plot.get_children()[0]
+      line.set_markersize(mSize)
+      line.set_markerfacecolor('none')
+
       plot = rplt.errorbar(jT2,xerr=False,emptybins=False,axes=ax,label="Leading track reference",fmt='o',fillstyle='none',ecolor='red') #Plot jT histogram, 
+      line = plot.get_children()[0]
+      line.set_markersize(mSize)
+      line.set_markerfacecolor('none')
+      #line.set_color(color)
+      
       ax.text(0.3,1e2,r'$p_{{T,\mathrm{{jet}}}}$:''\n'r' {:02d}-{:02d} GeV'.format(pT[0],pT[1])) 
   
       ax.set_xlim([0.1,22]) #Set x-axis limits
-      ax.set_ylim([5e-4,2e3]) #Set y-axis limits
+      ax.set_ylim([5e-5,2e3]) #Set y-axis limits
       ax.set_xticklabels(ax.get_xticklabels(),horizontalalignment='left')
-     
-    axs[0].legend(loc = 'lower left')
+    
+    for ratio,ax,i in zip(ratios,axs[4:],range(0,9)):
+      plot = rplt.errorbar(ratio,xerr=False,emptybins=False,axes=ax,fmt='o',fillstyle='none',ecolor='black') #Plot jT histogram, 
+      line = plot.get_children()[0]
+      line.set_markersize(mSize)
+      line.set_markerfacecolor('none')
+      ax.set_yscale('linear')
+      ax.set_xlim([0.1,22]) #Set x-axis limits
+      ax.set_ylim([0,5]) #Set y-axis limits
+    
+    handles, labels = axs[0].get_legend_handles_labels()
+    handles = [container.ErrorbarContainer(h,has_xerr=False,has_yerr=True) if isinstance(h, container.ErrorbarContainer) else h for h in handles]
+    axs[0].legend(handles,labels,loc = 'lower left',numpoints=1)
+    axs[4].set_ylabel('Ratio')
+    axs[7].set_ylabel('Ratio')
         
     plt.savefig("PythonFigures/MixedFullJetsR04JetConeJtLeadingRefPtFrom{}To{}.pdf".format(start,end),format='pdf') #Save figure
     plt.show() #Draw figure on screen

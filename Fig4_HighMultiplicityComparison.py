@@ -7,6 +7,7 @@ import defs
 import re
 import matplotlib
 from matplotlib import container
+import os.path
 
 from rootpy.plotting import Canvas
 from rootpy.plotting import Legend
@@ -72,33 +73,57 @@ def getBackgroundSystematic(signals,signalsRandom,divisor):
 def main(): 
   Rebin = 4
   #Load data
-  Mixed_FullJets_R04_HM_01 = datasetMixed("V0A, 0 -   1%",NFIN=0,range=(1,5),filename="CF_pPb_legotrain/legotrain_CF_pPb_2274_20181219/legotrain_CF_pPb_2274_20181219_LHC13cde.root",directory='AliJJetJtTask_Central01/AliJJetJtHistManager',directory2='AliJJetJtTask_kEMCEJE_Central01/AliJJetJtHistManager',color=colors[1],style=24,rebin=Rebin)
-  Mixed_FullJets_R04_HM_10 = datasetMixed("V0A, 0 - 10%",NFIN=0, range=(1,5),filename="CF_pPb_legotrain/legotrain_CF_pPb_2305_20190109/legotrain_CF_pPb_2305_20190109_LHC13bcde.root",directory='AliJJetJtTask_Central10/AliJJetJtHistManager',directory2='AliJJetJtTask_kEMCEJE_Central10/AliJJetJtHistManager',color=colors[2],style=24,rebin=Rebin)
-  FullJets_R04_MB = dataset("Minimum Bias",NFIN=0, range=(1,8),filename="CF_pPb_legotrain/legotrain_CF_pPb_2749_20190822/legotrain_CF_pPb_2749_20190822_LHC13de.root",directory="AliJJetJtTask_kEMCEJE/AliJJetJtHistManager",color=colors[0],style=24,rebin=Rebin)
-  FullJets_R04_HM_01_ZDC = dataset("ZDC, 0 -    1%",NFIN=0, range=(1,8),filename="CF_pPb_legotrain/legotrain_CF_pPb_2749_20190822/legotrain_CF_pPb_2749_20190822_LHC13de.root",directory="AliJJetJtTask_kEMCEJE_Central01/AliJJetJtHistManager",color=colors[4],style=24,rebin=Rebin)
-  FullJets_R04_HM_10_ZDC = dataset("ZDC, 0 - 10%",NFIN=0, range=(1,8),filename="CF_pPb_legotrain/legotrain_CF_pPb_2749_20190822/legotrain_CF_pPb_2768_2019_0825LHC13d.root",directory="AliJJetJtTask_kEMCEJE_Central10/AliJJetJtHistManager",color=colors[5],style=24,rebin=Rebin)
+  
 
+  if(os.path.exists('RootFiles/Fig4.root')):
+    inFile = "RootFiles/Fig4.root"
+    inF = root_open(inFile,'r')
+    signals = []
+    signals_randomBg = []
+    for i in range(3):
+      signal = [inF.Get("jTSignalJetPt_perp_pT{:02d}_{:02d}".format(ij,i)) for ij in range(7)]
+      signal2 = [inF.Get("jTSignalJetPt_random_pT{:02d}_{:02d}".format(ij,i)) for ij in range(7)]
+      signals.append(signal)
+      signals_randomBg.append(signal2)
+    names = ["Minimum Bias","V0A, 0 - 10%","ZDC, 0 - 10%"]
+    jetPt = [(int(re.search( r'p_{T,jet} : ([\d]*)\.[\d] - ([\d]*).[\d]*',h.GetTitle(), re.M|re.I).group(1)),int(re.search( r'p_{T,jet} : ([\d]*)\.[\d] - ([\d]*).[\d]*',h.GetTitle(), re.M|re.I).group(2))) for h in signals[0]] #Use regular expressions to extract jet pT range from histogram titles
+
+  else:  
+    Mixed_FullJets_R04_HM_01 = datasetMixed("V0A, 0 -   1%",NFIN=0,range=(1,5),filename="CF_pPb_legotrain/legotrain_CF_pPb_2274_20181219/legotrain_CF_pPb_2274_20181219_LHC13cde.root",directory='AliJJetJtTask_Central01/AliJJetJtHistManager',directory2='AliJJetJtTask_kEMCEJE_Central01/AliJJetJtHistManager',color=colors[1],style=24,rebin=Rebin)
+    Mixed_FullJets_R04_HM_10 = datasetMixed("V0A, 0 - 10%",NFIN=0, range=(1,5),filename="CF_pPb_legotrain/legotrain_CF_pPb_2305_20190109/legotrain_CF_pPb_2305_20190109_LHC13bcde.root",directory='AliJJetJtTask_Central10/AliJJetJtHistManager',directory2='AliJJetJtTask_kEMCEJE_Central10/AliJJetJtHistManager',color=colors[2],style=24,rebin=Rebin)
+    FullJets_R04_MB = dataset("Minimum Bias",NFIN=0, range=(1,8),filename="CF_pPb_legotrain/legotrain_CF_pPb_2749_20190822/legotrain_CF_pPb_2749_20190822_LHC13de.root",directory="AliJJetJtTask_kEMCEJE/AliJJetJtHistManager",color=colors[0],style=24,rebin=Rebin)
+    FullJets_R04_HM_01_ZDC = dataset("ZDC, 0 -    1%",NFIN=0, range=(1,8),filename="CF_pPb_legotrain/legotrain_CF_pPb_2749_20190822/legotrain_CF_pPb_2749_20190822_LHC13de.root",directory="AliJJetJtTask_kEMCEJE_Central01/AliJJetJtHistManager",color=colors[4],style=24,rebin=Rebin)
+    FullJets_R04_HM_10_ZDC = dataset("ZDC, 0 - 10%",NFIN=0, range=(1,8),filename="CF_pPb_legotrain/legotrain_CF_pPb_2749_20190822/legotrain_CF_pPb_2768_2019_0825LHC13d.root",directory="AliJJetJtTask_kEMCEJE_Central10/AliJJetJtHistManager",color=colors[5],style=24,rebin=Rebin)
+  
+    
+    
+    inclusive,jetPt = FullJets_R04_MB.getHist('JetConeJtWeightBin',jetpt = True)
+    incs = [inclusive]
+    datasets = [FullJets_R04_MB]
+    datasets.append(Mixed_FullJets_R04_HM_10)
+    datasets.append(FullJets_R04_HM_10_ZDC)
   
   
-  inclusive,jetPt = FullJets_R04_MB.getHist('JetConeJtWeightBin',jetpt = True)
-  incs = [inclusive]
-  datasets = [FullJets_R04_MB]
-  datasets.append(Mixed_FullJets_R04_HM_10)
-  datasets.append(FullJets_R04_HM_10_ZDC)
+    for data in datasets[1:]:
+      incs.append(data.getHist('JetConeJtWeightBin',jetpt = False))
+    names = [data.name() for data in datasets]
+    signals  = [data.getSubtracted('JetConeJtWeightBin','BgJtWeightBin',jetpt = False) for data in datasets]
+    signals_randomBg  = [data.getSubtracted('JetConeJtWeightBin','BgRndmJtWeightBin',jetpt = False,randomBG=True) for data in datasets]
+  
+    
+    
+    outFile = "RootFiles/Fig4.root"
+    outF = root_open(outFile,"w+")
+    for hists,hists2,j in zip(signals,signals_randomBg,range(5)):
+      for signal,signal_random,ij in zip(hists,hists2,range(10)):
+        signal.SetName("jTSignalJetPt_perp_pT{:02d}_{:02d}".format(ij,j))
+        signal.Write()
+        signal_random.SetName("jTSignalJetPt_random_pT{:02d}_{:02d}".format(ij,j))
+        signal_random.Write()
+    outF.Close()  
 
-
-  for data in datasets[1:]:
-    incs.append(data.getHist('JetConeJtWeightBin',jetpt = False))
-  names = [data.name() for data in datasets]
-  signals  = [data.getSubtracted('JetConeJtWeightBin','BgJtWeightBin',jetpt = False) for data in datasets]
-  signals_randomBg  = [data.getSubtracted('JetConeJtWeightBin','BgRndmJtWeightBin',jetpt = False,randomBG=True) for data in datasets]
 
   systematics = [getBackgroundSystematic(h1, h2,signals[0]) for h1,h2 in zip(signals,signals_randomBg)]
-  
-  background = [data.getHist('BgJtWeightBin',jetpt=False,isBg=True) for data in datasets]
-
-
-
   drawSignal(signals,systematics,names,colors,styles,jetPt)
 
 def drawSignal(signals,systematics,names,colors,styles,jetPt):

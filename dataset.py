@@ -462,8 +462,10 @@ class datasetMixed(dataset,object):
       name: Name of histograms
       kwargs: list of keyword arguments
     """
-    hist1 = [self._f.Get('{0[dir]}/{0[histname]}/{0[histname]}NFin{0[NFin]:02d}JetPt{0[pT]:02d}'.format({'dir':self._directory1, 'histname':name,'NFin':self._NFIN,'pT':i})).Clone() for i in range(self._range[0],self._range[1])]  #Get jT histograms from file an array
-    hist2 = [self._f2.Get('{0[dir]}/{0[histname]}/{0[histname]}NFin{0[NFin]:02d}JetPt{0[pT]:02d}'.format({'dir':self._directory2, 'histname':name,'NFin':self._NFIN,'pT':i})).Clone() for i in range(self._range[0],9)]  #Get jT histograms from file an array
+    extra = kwargs.get('extra','')
+
+    hist1 = [self._f.Get('{0[dir]}/{0[histname]}/{0[histname]}NFin{0[NFin]:02d}JetPt{0[pT]:02d}{0[extra]}'.format({'dir':self._directory1, 'histname':name,'NFin':self._NFIN,'pT':i,'extra':extra})).Clone() for i in range(self._range[0],self._range[1])]  #Get jT histograms from file an array
+    hist2 = [self._f2.Get('{0[dir]}/{0[histname]}/{0[histname]}NFin{0[NFin]:02d}JetPt{0[pT]:02d}{0[extra]}'.format({'dir':self._directory2, 'histname':name,'NFin':self._NFIN,'pT':i,'extra':extra})).Clone() for i in range(self._range[0],9)]  #Get jT histograms from file an array
     hist = [hist1[i] if(i < self._range[1]-self._range[0]) else hist2[i] for i in range(0,9-self._range[0])]    
     #print('{0[dir]}/{0[histname]}/{0[histname]}NFin{0[NFin]:02d}JetPt{0[pT]:02d}'.format({'dir':self._directory, 'histname':name,'NFin':self._NFIN,'pT':1}))
     jetPt = [(int(re.search( r'p_{T,jet} : ([\d]*)\.[\d] - ([\d]*).[\d]*',h.GetTitle(), re.M|re.I).group(1)),int(re.search( r'p_{T,jet} : ([\d]*)\.[\d] - ([\d]*).[\d]*',h.GetTitle(), re.M|re.I).group(2))) for h in hist] #Use regular expressions to extract jet pT range from histogram titles
@@ -574,15 +576,14 @@ def compareSetsWithRatio(sets,histname):
  
   return sets
  
-def compareHistsWithRatio(dataset,histnames,labels,step=2,extras=None):
+def compareHistsWithRatio(dataset,histnames,labels,step=2,start=1,extras=None):
   """Draw a comparison between sets in 4 jet pT bins with ratios to first set in list
   
   Args:
-    sets: List os sets to be used
+    sets: List of sets to be used
     histname: Name of histogram to be plotted
     
   """
-  print("MOI")
   print(extras)
   if(extras is None):
     print("Extras is None")
@@ -596,7 +597,7 @@ def compareHistsWithRatio(dataset,histnames,labels,step=2,extras=None):
   axs[1].text(0.2,0.005,d['system'] +'\n'+  d['jettype'] +'\n'+ d['jetalg'] + '\n'+ d['trigger'],fontsize = 7)
   colors = [1,2,3,4,5]
   for i,(hist,name) in enumerate(zip(hists,labels)):
-    for jT,pT,ax,j in zip(hist[0][1::step],hist[1][1::step],axs[0:4],range(0,5)):
+    for jT,pT,ax,j in zip(hist[0][start::step],hist[1][start::step],axs[0:4],range(0,5)):
       jT.SetMarkerColor(colors[i])
       rplt.errorbar(jT,xerr=False,emptybins=False,axes=ax,label=name,fmt='o') #Plot jT histogram, 
       ax.set_xlim([0.1,20]) #Set x-axis limits

@@ -77,8 +77,8 @@ def main():
   mSize = 0.3
   iS = 0
 
-  f = root_open("errors_test.root", 'read')
-  f2 = root_open("jtAnalysisFinalGraphs.root",'read')
+  f = root_open("RootFiles/jtSystematics.root", 'read')
+  f2 = root_open("RootFiles/dihadronjTFinalGraphs.root",'read')
 
   gGausRMS = f.Get("gGausRMS{:02d}".format(iS))
   gGausRMSerr = f.Get("gGausRMS{:02d}_Systematics".format(iS))

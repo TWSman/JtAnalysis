@@ -89,7 +89,7 @@ def main():
     errGraph = [None if ij < start else inF.Get("jTSignalJetPt_syst{:02d}".format(ij)) for ij in range(8)]
 
   else:
-    f = root_open("errors_test.root", 'read')
+    f = root_open("RootFiles/jtSystematics.root", 'read')
   
 
     stats = [None if ij < start else f.Get("JetConeJtWeightBinNFin{:02d}JetPt{:02d}_Statistics".format(iS,ij)) for ij in range(8)]

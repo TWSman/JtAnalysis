@@ -55,8 +55,8 @@ def main():
 
   Njets = 9
 
-  if(os.path.exists('RootFiles/Fig7.root')):
-    inFile = "RootFiles/Fig7.root"
+  if(os.path.exists('RootFiles/Fig6.root')):
+    inFile = "RootFiles/Fig6.root"
     inF = root_open(inFile,'r')
     FullJets_gausRMS = [inF.Get("FullJets_gausRMS_R{:02d}".format(int(R*10))) for R in Rs]
     FullJets_gammaRMS = [inF.Get("FullJets_gammaRMS_R{:02d}".format(int(R*10))) for R in Rs]
@@ -147,7 +147,7 @@ def main():
       FullJets_fit.append(fits)
       FullJets_parameters.append(parameters)
 
-    outFile = "Python/RootFiles/Fig7.root"
+    outFile = "Python/RootFiles/Fig6.root"
     outF = root_open(outFile,"w+")
     for h1,h2,jT,R in zip(FullJets_gausRMS,FullJets_gammaRMS,FullJets_jT,Rs):
       h1.SetName("FullJets_gausRMS_R{:02d}".format(int(R*10)))

@@ -63,8 +63,8 @@ def main():
   iS = 0
   start = 4
 
-  if(os.path.exists('RootFiles/Fig3.root')):
-    inFile = "RootFiles/Fig3.root"
+  if(os.path.exists('RootFiles/Fig1.root')):
+    inFile = "RootFiles/Fig1.root"
     inF = root_open(inFile,'r')
     errGraph = [inF.Get("jTSignalJetPt_Syst{:02d}".format(ij)) for ij in range(4)]
     hJtSignalGraph = [inF.Get("jTSignalJetPt_Stat{:02d}".format(ij)) for ij in range(4)]
@@ -72,7 +72,7 @@ def main():
     f = root_open("errors_test.root", 'read')
     errGraph = [f.Get('JetConeJtWeightBinNFin{:02d}JetPt{:02d}_Systematics'.format(iS,i)) for i in range(start,Njets)]  #Get jT histograms from file an array
     hJtSignalGraph = [f.Get('JetConeJtWeightBinNFin{:02d}JetPt{:02d}_Statistics'.format(iS,i)) for i in range(start,Njets)]  #Get jT histograms from file an array
-    outFile = "RootFiles/Fig3.root"
+    outFile = "RootFiles/Fig1.root"
     outF = root_open(outFile,"w+")
     for err,signal,i in zip(errGraph,hJtSignalGraph,range(10)):
       err.SetName("jTSignalJetPt_Syst{:02d}".format(i))

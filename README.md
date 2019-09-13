@@ -15,3 +15,11 @@ Figures for jT paper are produced with the macros
 
 The macro names correspond to the figure numbers of the paper draft (version 13.9.2019). 
 https://github.com/TWSman/JtPaper
+
+Simply run with (for example)
+
+'python Fig1_DrawJtSystematics.py'
+
+## Root Files
+
+Files for producing figures for the paper can be found in the RootFiles folder

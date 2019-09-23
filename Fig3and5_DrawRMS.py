@@ -201,9 +201,9 @@ def main():
       g.SetPointError(i,x1e,yerr)
 
 
-  Pythia = dataset("Pythia8 4C",NFIN=0,range=(2,8),filename="Pythia/Grid_Monash.root",directory='/JCDijetBaseTask/jcdijet',color=colors[1],style=24,rebin=Rebin)
-  Pythia2 = dataset("Pythia8 Monash",NFIN=0,range=(2,8),filename="Pythia/Grid_Tune4c.root",directory='/JCDijetBaseTask/jcdijet',color=colors[2],style=24,rebin=Rebin)
-  Herwig = dataset("Herwig 7.0",NFIN=0,range=(2,8),filename="Herwig/Herwig-LHCtest.root",directory='/JJetJt',color=colors[3],style=24,rebin=Rebin)
+  Pythia = dataset("Pythia8 4C",NFIN=0,range=(2,8),filename="RootFiles/Grid_Monash.root",directory='/JCDijetBaseTask/jcdijet',color=colors[1],style=24,rebin=Rebin)
+  Pythia2 = dataset("Pythia8 Monash",NFIN=0,range=(2,8),filename="RootFiles/Grid_Tune4c.root",directory='/JCDijetBaseTask/jcdijet',color=colors[2],style=24,rebin=Rebin)
+  Herwig = dataset("Herwig 7.0",NFIN=0,range=(2,8),filename="RootFiles/Herwig7.root",directory='/JJetJt',color=colors[3],style=24,rebin=Rebin)
   #Pythia_ALICE = dataset("ALICE Pythia6 Perugia2011",NFIN=0,range=(1,8),filename="CF_pPb_MC_legotrain/legotrain_610_20181010-1926_LHCb4_fix_CF_pPb_MC_ptHardMerged.root",directory='AliJJetJtTask/AliJJetJtHistManager',color=colors[4],style=24,rebin=Rebin)
   #datasets = [Pythia]
   #inclusive,jetPt = Pythia.getHist('JetConeJtWeightBin',jetpt = True)   

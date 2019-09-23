@@ -52,28 +52,17 @@ mSize = 6
 def main(): 
   print 'Number of arguments: ', len(sys.argv), 'arguments.'
   print 'Argument list:',str(sys.argv)
-  filename = sys.argv[1]
-  separate = int(sys.argv[2])
-  if(len(sys.argv) > 3):
-    start = int(sys.argv[3])
-    end = int(sys.argv[4])
-  else:
-    start = 2
-    end = 6
+  filename = "rootFiles/legotrain_CF_pPb_2305_20190109_LHC13bcde_minimal.root"
+  separate = 0
+  start = 2
+  end = 6
   n_figs = end-start
-  print("Number of figs: {}".format(n_figs))
-  print "Input file: "
-  print filename
-  #FullJets_R04 = dataset('Full jets R=0.4',NFIN=0,range=(start,end),filename=filename,directory='AliJJetJtTask/AliJJetJtHistManager',color=2,style=24,rebin=2)
+
   Mixed_FullJets_R04 = datasetMixed("Full jets R=0.4",NFIN=0,range=(1,5),filename=filename,directory='AliJJetJtTask/AliJJetJtHistManager',directory2='AliJJetJtTask_kEMCEJE/AliJJetJtHistManager',color=2,style=24,rebin=2)
-  #signal,jetPt = FullJets_R04.getHist('JtWeightBin',jetpt = True)
-  #signal2 = FullJets_R04.getHist('JtWeightLeadingRefBin',jetpt=False)
-  #compareHistsWithRatio(FullJets_R04,['JtWeightBin','JtWeightLeadingRefBin','JtWeightLeadingRefBin','JtWeightLeadingRefBin','JtWeightLeadingRefBin'],['Jet axis ref.','leading ref. (xlong 0.0-0.2)','leading ref. (xlong 0.2-0.4)','leading ref. (xlong 0.4-0.6)','leading ref. (xlong 0.6-1.0)'],step=1,extras=['','Xlong00','Xlong01','Xlong02','Xlong03'])
   compareHistsWithRatio(Mixed_FullJets_R04,['JtWeightBin','JtWeightLeadingRefBin','JtWeightLeadingRefBin'],['Jet axis ref.','leading ref. (xlong 0.0-0.2)','leading ref. (xlong 0.2-0.4)'],step=1,start=1,extras=['','Xlong00','Xlong01'])
   plt.savefig("PythonFigures/JetVsLeadingRefConst.pdf",format='pdf') #Save figure
   plt.show()
   sets = compareHistsWithRatio(Mixed_FullJets_R04,['JetConeJtWeightBin','JetConeJtWeightLeadingRefBin','JetConeJtWeightLeadingRefBin','JetConeJtWeightLeadingRefBin','JetConeJtWeightLeadingRefBin'],['Jet axis ref.','leading ref.(xlong 0.0-0.2)','leading ref.(xlong 0.2-0.4)','leading ref.(xlong 0.4-0.6)','leading ref. (xlong 0.6-1.0)'],step=1,extras=['','Xlong00','Xlong01','Xlong02','Xlong03'])
-  #sets = compareHistsWithRatio(FullJets_R04,['JetConeJtWeightBin','JetConeJtWeightLeadingRefBin','JetConeJtWeightLeadingRefBin'],['Jet axis ref.','leading ref.(xlong 0.0-0.2)','leading ref.(xlong 0.2-0.4)'],step=1,start=1,extras=['','Xlong00','Xlong01'])
 
   plt.savefig("PythonFigures/JetVsLeadingRefJetCone.pdf",format='pdf') #Save figure
   plt.show()
@@ -88,11 +77,7 @@ def main():
     h.Add(s,1)
     h.Add(s2,1)
     h.Add(s3,1)
-#   print(JtLeading)
-#   for set in sets[2:]:
-#     for h,s in zip(JtLeading,set[0]):
-#       print(s)
-#       h.Add(s,1)
+
   jetPt = sets[0][1]
   jetPtCenter = array('d',[(a+b)/2.0 for a,b in jetPt])
   jetPtErrors = array('d',[(b-a)/2.0 for a,b in jetPt])

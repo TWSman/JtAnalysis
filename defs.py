@@ -53,7 +53,7 @@ def makegrid(nx=4,ny=2,xlog=True,ylog=True,d=None,shareY=True,figsize = (10,5),*
   if('ytitle' in kwargs):
     ytitle = kwargs['ytitle']
   else:
-    ytitle = r'$\frac{1}{N_{jets}}\frac{\mathrm{d} N}{j_\mathrm{T}\mathrm{d} j_\mathrm{T}}$'
+    ytitle = r'$\frac{1}{N_\mathrm{jets}}\frac{\mathrm{d} N}{j_\mathrm{T}\mathrm{d} j_\mathrm{T}}$'
 
   fig, axs = plt.subplots(ny,nx,figsize=figsize,sharey=shareY,sharex=True) #Create figure with 8 subfigures, axs is a list of subfigures, fig is the whole thing
   #axs = axs.reshape(nx*ny) #Because the figures is in a nx*ny layout axs is a 2 dimensional array with nx * ny elements, this makes it a 1 dimensional array with nx*ny  elements
@@ -120,7 +120,7 @@ def makeRatio(xlog=True,ylog=True,d=None,shareY=False,figsize = (4,6),**kwargs):
   if('ytitle' in kwargs):
     ytitle = kwargs['ytitle']
   else:
-    ytitle = r'$\frac{1}{N_{jets}}\;\frac{1}{j_\mathrm{T}}\;\frac{\mathrm{d} N}{\mathrm{d} j_\mathrm{T}}$'
+    ytitle = r'$\frac{1}{N_\mathrm{jets}}\;\frac{1}{j_\mathrm{T}}\;\frac{\mathrm{d} N}{\mathrm{d} j_\mathrm{T}}\;\left(\frac{c^2}{\mathrm{GeV}^2}\right) $'
 
   fig=plt.figure(figsize=figsize,)
   gs=GridSpec(2,1,height_ratios=[2, 1])

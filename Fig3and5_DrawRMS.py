@@ -203,7 +203,7 @@ def main():
 
   Pythia = dataset("Pythia8 4C",NFIN=0,range=(2,8),filename="RootFiles/Grid_Monash.root",directory='/JCDijetBaseTask/jcdijet',color=colors[1],style=24,rebin=Rebin)
   Pythia2 = dataset("Pythia8 Monash",NFIN=0,range=(2,8),filename="RootFiles/Grid_Tune4c.root",directory='/JCDijetBaseTask/jcdijet',color=colors[2],style=24,rebin=Rebin)
-  Herwig = dataset("Herwig 7.0",NFIN=0,range=(2,8),filename="RootFiles/Herwig7.root",directory='/JJetJt',color=colors[3],style=24,rebin=Rebin)
+  #Herwig = dataset("Herwig 7.0",NFIN=0,range=(4,5),filename="RootFiles/Herwig7.root",directory='/JJetJt',color=colors[3],style=24,rebin=Rebin)
   #Pythia_ALICE = dataset("ALICE Pythia6 Perugia2011",NFIN=0,range=(1,8),filename="CF_pPb_MC_legotrain/legotrain_610_20181010-1926_LHCb4_fix_CF_pPb_MC_ptHardMerged.root",directory='AliJJetJtTask/AliJJetJtHistManager',color=colors[4],style=24,rebin=Rebin)
   #datasets = [Pythia]
   #inclusive,jetPt = Pythia.getHist('JetConeJtWeightBin',jetpt = True)   
@@ -212,7 +212,7 @@ def main():
   datasets = [Pythia]
   incs = [inclusive]
   datasets.append(Pythia2)
-  datasets.append(Herwig)
+  #datasets.append(Herwig)
   for data in datasets[1:]:
     incs.append(data.getHist('JetConeJtWeightBin',jetpt = False))
     
@@ -237,9 +237,11 @@ def main():
     
 
 
-  pythiaN = [(gGausRMSPythia,"Pythia6"),(gausRMS[0],"Pythia8 4C"),(gausRMS[1],"Pythia8 Monash"),(gausRMS[2],"Herwig 7.0")]
-  pythiaW = [(gGammaRMSPythia,"Pythia6"),(gammaRMS[0],"Pythia8 4C"),(gammaRMS[1],"Pythia8 Monash"),(gammaRMS[2],"Herwig 7.0")]
+  #pythiaN = [(gGausRMSPythia,"Pythia6"),(gausRMS[0],"Pythia8 4C"),(gausRMS[1],"Pythia8 Monash"),(gausRMS[2],"Herwig 7.0")]
+  #pythiaW = [(gGammaRMSPythia,"Pythia6"),(gammaRMS[0],"Pythia8 4C"),(gammaRMS[1],"Pythia8 Monash"),(gammaRMS[2],"Herwig 7.0")]
   
+  pythiaN = [(gausRMS[0],"Pythia8 4C"),(gausRMS[1],"Pythia8 Monash")]
+  pythiaW = [(gammaRMS[0],"Pythia8 4C"),(gammaRMS[1],"Pythia8 Monash")]
   #Fig 3, NArrow and Wide RMS without Pythia 
   drawWithErrors2Combined(gGausRMS,gGausRMSerr,gGammaRMS,gGammaRMSerr,35,135,0,0,1.5,0,r'$p_\mathrm{T,jet}$ (GeV/c)',r'$\sqrt{\left<j_\mathrm{T}^{2}\right>}$ (GeV/c)',"RMS","_triggered","PythonFigures/RMSWithSystematics",1,-1,wideE=0.041,narrowE=0.051)
   
@@ -483,10 +485,6 @@ def drawWithErrors2Combined(h,h_sys,h2,h2_sys,xlow,xhigh,logx,ylow,yhigh,ylog,xT
 
   plt.show() #Draw figure on screen
 
-   
-
-
-   
 if __name__ == "__main__": main()
 
     

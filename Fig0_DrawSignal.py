@@ -21,7 +21,7 @@ def main():
   end = 8
   n_figs = end-start
   title = "Full jets R=0.4"
-  if(os.path.exists('RootFiles/Fig0.root')):
+  if(os.path.exists('./RootFiles/Fig0.root')):
     inFile = "RootFiles/Fig0.root"
     inF = root_open(inFile,'r')
     signal = [inF.Get("jTSignalJetPt{:02d}".format(i)) for i in range(8)]
@@ -31,8 +31,8 @@ def main():
     filename = "CF_pPb_legotrain/legotrain_CF_pPb_1839_20180613_LHC13bcde.root"
 
     print("Number of figs: {}".format(n_figs))
-    print "Input file: "
-    print filename
+    print( "Input file: ")
+    print (filename)
     Mixed_FullJets_R04 = datasetMixed(title,NFIN=0,range=(1,5),filename=filename,directory='AliJJetJtTask/AliJJetJtHistManager',directory2='AliJJetJtTask_kEMCEJE/AliJJetJtHistManager',color=2,style=24,rebin=2)
     signal,jetPt = Mixed_FullJets_R04.getSubtracted('JetConeJtWeightBin','BgJtWeightBin',jetpt = True)
     

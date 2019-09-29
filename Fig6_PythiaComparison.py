@@ -212,7 +212,7 @@ def main():
   ax.set_xscale('log')
   plt.tight_layout()
   plt.subplots_adjust(wspace =0,hspace=0) #Set space between subfigures to 0  
-  plt.savefig("PythonFigures/RcomparisonSignalPt6080.pdf".format(file),format='pdf') #Save figure
+  #plt.savefig("PythonFigures/RcomparisonSignalPt6080.pdf".format(file),format='pdf') #Save figure
 
   plt.show() #Draw figure on screen
   drawWithErrors2Combined(FullJets_gausRMS,FullJets_gammaRMS,15,500,1,0,1.65,0,r'jet $p_T (GeV/c)$',r'$\sqrt{\left<j_T^2\right>}$','Pythia','PythonFigures/RcomparisonRMS',separate=True)

@@ -26,7 +26,7 @@ import numpy as np
 d = dict(
     jetalg = r'Anti-$k_\mathrm{T}$, R=0.4',
     jettype = 'Full Jets',
-    system = r'ALICE p-Pb $\sqrt{s_{NN}} = 5.02 \mathrm{TeV}$' ,
+    system = r'ALICE p-Pb $\sqrt{s_\mathrm{NN}} = 5.02 \mathrm{TeV}$' ,
     trigger = 'kINT7/kEMCEJE',
     cut = r'$\left| \eta_\mathrm{jet} \right| < 0.25$'
     
@@ -46,11 +46,7 @@ def main():
 
   Njets = 8
   
-
-  
-  
   topcomment = "_systematics_Triggered"
-  
   finderName = ["Full jets, Anti-k_\mathrm{T} R = 0.4","Charged Jets, Anti-k_\mathrm{T} R = 0.4"]
   finderType = ["Full","Charged"]
   setTitle = ["0","1","2","3","4","5"]
@@ -85,7 +81,7 @@ def main():
   ylow = 5e-6
   yhigh = 5e2*pow(10,4*scaleInterval)
   xlow = 0.1
-  xhigh = 10
+  xhigh = 4.5
 
       
   

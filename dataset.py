@@ -66,7 +66,7 @@ class dataset(object):
       try:
         self._measRndmBgN = [int(f.Get('{}/hNumber/hNumberNFin{:02d}'.format(self._directory,self._NFIN)).GetBinContent(7+i)) for i in range(self._range[0],self._range[1])] #Get number of background jets
       except rootpy.io.file.DoesNotExist:
-        print "No random background"
+        print ("No random background")
         self._measRndmBgN = [0 for i in range(self._range[0],self._range[1])]
   def printStats(self,**kwargs):
     """Print available statistics, number of jets by jet PT bin
@@ -83,45 +83,6 @@ class dataset(object):
     ratios = [a / float(b) for b,a in zip(self._measN,self._measBgN)]
     hist = [self._f.Get('{0[dir]}/{0[histname]}/{0[histname]}NFin{0[NFin]:02d}JetPt{0[pT]:02d}'.format({'dir':self._directory, 'histname':'JetPtBin','NFin':self._NFIN,'pT':i})) for i in range(self._range[0],self._range[1])]  #Get jT histograms from file an array
     jetPt = [(int(re.search( r'p_{T,jet} : ([\d]*)\.[\d] - ([\d]*).[\d]*',h.GetTitle(), re.M|re.I).group(1)),int(re.search( r'p_{T,jet} : ([\d]*)\.[\d] - ([\d]*).[\d]*',h.GetTitle(), re.M|re.I).group(2))) for h in hist] #Use regular expressions to extract jet pT range from histogram titles
-    if(kwargs.get('format','') == 'latex'):
-      if(kwargs.get('what','') == 'all'):
-        print '\\begin{tabular}{lllllllllll}'
-        print '{}'.format(self.name()),
-      if(kwargs.get('what','') == 'all' or kwargs.get('what','') == 'jetpt' ):
-        for pT in jetPt:
-          print '& {}-{}'.format(pT[0],pT[1]),
-        print '\\\\'
-      if(kwargs.get('what','') == 'all' or kwargs.get('what','') == 'jets' ):
-        if(kwargs.get('what','')=='all'):
-          print 'Jets',
-        else: print '{}'.format(self.name()),
-        for N in self._measN:
-            print '& {}'.format(N), 
-        print '\\\\'
-      if(kwargs.get('what','') == 'all' or kwargs.get('what','') == 'bg' ):
-        if(kwargs.get('what','')=='all'):
-          print 'Bg Cones',
-        else: print '{}'.format(self.name()),
-        for N in self._measBgN:
-          print '& {}'.format(N), 
-        print '\\\\'
-      if(kwargs.get('what','') == 'all' or kwargs.get('what','') == 'bgratio' ):
-        if(kwargs.get('what','')=='all'):
-          print 'Bg ratio',
-        else: print '{}'.format(self.name()),
-        for N in ratios:
-          print '& {:.2f}\\%'.format(100*N), 
-        print '\\\\'
-      if(kwargs.get('what','') == 'all'):
-        print '\\end{tabular}'
-    else:
-      print "{} Jets: ".format(self.name())
-      print self._measN
-      print "{} Bg Cones: ".format(self.name())
-      print self._measBgN
-      print "{} Bg Ratio: ".format(self.name())
-      print ratios
-   
 
   def getSubtracted(self,inclusive,background,**kwargs):
     hist,jetpt = self.getHist(inclusive,jetpt=True)
@@ -421,7 +382,7 @@ class datasetMixed(dataset,object):
       self._f2 = self._f
     self._directory1 = kwargs['directory']
     self._directory2 = kwargs['directory2']
-    print "Directory 1: {} Directory 2: {}".format(self._directory1,self._directory2)
+    print ("Directory 1: {} Directory 2: {}".format(self._directory1,self._directory2))
     self._measN1 = [self._f.Get('{}/JetPtBin/JetPtBinNFin{:02d}JetPt{:02d}'.format(self._directory1,self._NFIN,i)).Integral() for i in range(self._range[0],self._range[1])] #Get number of jets by jet pT bins
     self._measN2 = [self._f2.Get('{}/JetPtBin/JetPtBinNFin{:02d}JetPt{:02d}'.format(self._directory2,self._NFIN,i)).Integral() for i in range(self._range[0],9)] #Get number of jets by jet pT bins
     self._measBgN1 = [self._f.Get('{}/BgTrkNumberBin/BgTrkNumberBinNFin{:02d}JetPt{:02d}'.format(self._directory1,self._NFIN,i)).Integral() for i in range(self._range[0],self._range[1])] #Get number of background jets
@@ -434,8 +395,8 @@ class datasetMixed(dataset,object):
     self._measN = [self._measN1[i] if (i < self._range[1] -self._range[0]) else self._measN2[i] for i in range(0,9-self._range[0])]
     self._measBgN = [self._measBgN1[i] if (i < self._range[1] - self._range[0]) else self._measBgN2[i] for i in range(0,9-self._range[0])]
     self._measRndmBgN = [self._measRndmBgN1[i] if (i < self._range[1] -self._range[0]) else self._measRndmBgN2[i] for i in range(0,9-self._range[0])]
-    print "MeasN1: {} MeasN2: {}".format(self._measN1,self._measN2)
-    print "MeasN: {} ".format(self._measN)
+    print ("MeasN1: {} MeasN2: {}".format(self._measN1,self._measN2))
+    print ("MeasN: {} ".format(self._measN))
 
   def getGraphs(self,**kwargs):
     return self.getGraphs2(self._range[0],8,**kwargs)
@@ -855,11 +816,11 @@ def fitJtHisto(histo,method,cut,iJet,iFinder,title="",drawFit=False):
   return gaussfit3,d
     
 def main():
-  print 'Number of arguments: ', len(sys.argv), 'arguments.'
-  print 'Argument list:',str(sys.argv)
+  print ('Number of arguments: ', len(sys.argv), 'arguments.')
+  print ('Argument list:',str(sys.argv))
   filename = sys.argv[1]
-  print "Input file: "
-  print filename
+  print ("Input file: ")
+  print (filename)
   MB_FullJets_R04 = dataset("MBFullR04",NFIN=0,filename=filename,directory='AliJJetJtTask/AliJJetJtHistManager',color=1,style=24,rebin=5)
   #MB_FullJets_R05 = dataset("MBFullR05",NFIN=1,filename=filename,directory='AliJJetJtTask/AliJJetJtHistManager',color=2,style=24,rebin=5)
   #MB_ChargedJets_R04 = dataset("MBChargedR04",NFIN=2,filename=filename,directory='AliJJetJtTask/AliJJetJtHistManager',color=1,style=24,rebin=5)

@@ -25,13 +25,13 @@ import numpy as np
 d = dict(
     jetalg = r'Anti-$k_\mathrm{T}$, R=0.4',
     jettype = 'Full Jets',
-    system = r'ALICE p-Pb $\sqrt{s_{NN}} = 5.02 \mathrm{TeV}$' ,
+    system = r'p-Pb $\sqrt{s_\mathrm{NN}} = 5.02 \mathrm{TeV}$' ,
     trigger = 'kINT7/kEMCEJE',
     cut = r'$\left| \eta_\mathrm{jet} \right| < 0.25$'
     
 )
 
-labelsize= 15
+labelsize= 16
 styles = [23,24,25,27,30]
 colors = [1,2,3,4,7]
 colorsBox = ['k','r','g','b']
@@ -39,7 +39,7 @@ colorsBox = ['k','r','g','b']
 Rebin = 2
 boxwidth = 2.5
 xlow = 0.1
-xhigh = 10
+xhigh = 3
 mSize = 6
 
 def main(): 
@@ -78,7 +78,7 @@ def main():
   logx = 1
   doWeight = 1
   iS = 0
-  start = 4
+  start = 5
   iS = 0
   
   if(os.path.exists('RootFiles/Fig2.root')):
@@ -117,7 +117,7 @@ def main():
     color = colors[1]
     fig,axs = defs.makeRatio(xlog=True,ylog=True,d=d,shareY=False,figsize = (5,6),grid=False)
     axs = axs.reshape(n_figs)
-    axs[0].text(0.8,7,d['system'] +'\n'+  d['jettype'] +'\n'+ d['jetalg'] + '\n' + d['cut'] + '\n' + r'${:02d}\: < p_{{\mathrm{{T,jet}}}} < {:02d}\:\mathrm{{GeV}}/c$'.format(pT[0],pT[1]),fontsize = 10)
+    axs[0].text(0.6,40,d['system'] +'\n'+  d['jettype'] +'\n'+ d['jetalg'] + '\n' + d['cut'] + '\n' + r'${:02d}\: < p_{{\mathrm{{T,jet}}}} < {:02d}\:\mathrm{{GeV}}/c$'.format(pT[0],pT[1]),fontsize = 10)
     ax = axs[0]
     xs = np.arange(0,xhigh,0.01).tolist()
     for ii in range(6):
@@ -166,7 +166,7 @@ def main():
     if(n_figs > 2):
       ax.text(0.5,1e2,r'${:02d}\:\mathrm{{GeV}} < p_{{\mathrm{{T,jet}}}} < {:02d}\:\mathrm{{GeV}}$'.format(pT[0],pT[1])) 
     ax.set_xlim([xlow,xhigh]) #Set x-axis limits
-    ax.set_ylim([1e-6,2e3]) #Set y-axis limits
+    ax.set_ylim([1e-3,5e3]) #Set y-axis limits
     x_ = Double()
     y1 = Double()
     xe = Double()
@@ -249,7 +249,8 @@ def main():
     handles = [container.ErrorbarContainer(h,has_xerr=False,has_yerr=True) if isinstance(h, container.ErrorbarContainer) else h for h in handles]
     axs[0].legend(handles,labels,loc = 'lower left',numpoints=1)
   
-    axs[0].text(0.11,3e2,"ALICE",weight='bold')
+    #axs[0].text(0.11,1e3,"ALICE",weight='bold')
+    axs[0].text(0.12,7e2,"ALICE", fontsize = 20)
   
     fig.align_labels()
     print("Save PythonFigures/JtSignalFinalFitJetPt{}.pdf".format(ij))

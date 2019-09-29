@@ -50,8 +50,8 @@ mSize = 6
 
 
 def main(): 
-  print 'Number of arguments: ', len(sys.argv), 'arguments.'
-  print 'Argument list:',str(sys.argv)
+  print ('Number of arguments: ', len(sys.argv), 'arguments.')
+  print ('Argument list:',str(sys.argv))
   filename = "rootFiles/legotrain_CF_pPb_2305_20190109_LHC13bcde_minimal.root"
   separate = 0
   start = 2

@@ -292,9 +292,9 @@ def fitJtHisto(histo,method,cut,iJet,iFinder,title="",draw=False):
   invG.SetParLimits(2,B4low,B4high)
   histo.Fit("invG","QN","",cut,3)
   if method == "alt":
-    gaussfit3= TF1("gaussfit3","gausn(0) + [3]* (pow([4]*([5]+1),[5])/TMath::Gamma([5]))*exp(-[4]*([5]+1)/x) * pow(x, -[5]-1)",0,10)
+    gaussfit3 = TF1("gaussfit3","gausn(0) + [3]* (pow([4]*([5]+1),[5])/TMath::Gamma([5]))*exp(-[4]*([5]+1)/x) * pow(x, -[5]-1)",0,10)
   else:
-    gaussfit3= TF1("gaussfit3","gausn(0) + [3]* (pow([4],[5])/TMath::Gamma([5]))*exp(-[4]/x) * pow(x, -[5]-1)",0,10)
+    gaussfit3 = TF1("gaussfit3","gausn(0) + [3]* (pow([4],[5])/TMath::Gamma([5]))*exp(-[4]/x) * pow(x, -[5]-1)",0,10)
   gaussfit3.SetParameter(0, gaussfit.GetParameter(0))
   gaussfit3.SetParameter(1, gaussfit.GetParameter(1))
   gaussfit3.SetParameter(2, gaussfit.GetParameter(2))

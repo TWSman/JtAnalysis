@@ -1,15 +1,8 @@
-import rootpy
 import defs
-import re
-import matplotlib
-from rootpy.plotting import Canvas
-from rootpy.plotting import Legend
-from rootpy.io import root_open
-from matplotlib.backends.backend_pdf import PdfPages
 import rootpy.plotting.root2matplotlib as rplt
 import matplotlib.pyplot as plt
 import sys
-from dataset import *
+from dataset import dataset, d
 
 
 def main():
@@ -19,7 +12,7 @@ def main():
     separate = int(sys.argv[2])
     print("Input file: ")
     print(filename)
-    FullJets_R04 = dataset(
+    full_jets_r04 = dataset(
         "Full jets R=0.4",
         NFIN=0,
         filename=filename,
@@ -28,7 +21,7 @@ def main():
         style=24,
         rebin=5,
     )
-    signal, jetPt = Mixed_FullJets_R04.getSubtracted(
+    signal, jetPt = full_jets_r04.getSubtracted(
         "JetConeJtWeightBin", "BgJtWeightBin", jetpt=True
     )
 
@@ -48,7 +41,7 @@ def main():
             xerr=False,
             emptybins=False,
             axes=ax,
-            label=Mixed_FullJets_R04.name(),
+            label=full_jets_r04.name(),
             fmt="o",
         )  # Plot jT histogram,
         ax.text(
@@ -85,7 +78,7 @@ def main():
                 xerr=False,
                 emptybins=False,
                 axes=ax,
-                label=Mixed_FullJets_R04.name(),
+                label=full_jets_r04.name(),
                 fmt="o",
             )  # Plot jT histogram,
 

@@ -10,14 +10,16 @@ import rootpy.plotting.root2matplotlib as rplt
 import matplotlib.pyplot as plt
 import sys
 from dataset import *
+
+
 def main(): 
-  print 'Number of arguments: ', len(sys.argv), 'arguments.'
-  print 'Argument list:',str(sys.argv)
+  print('Number of arguments: ', len(sys.argv), 'arguments.')
+  print('Argument list:',str(sys.argv))
   filename1 = '~/OneDrive/work/032.JTAnalysis/Unfolding/RooUnfold/CF_pPb_legotrain/legotrain_CF_pPb_CF_pPb-1209_20170807_LHC13bcde.root'
   filename2 = '~/OneDrive/work/032.JTAnalysis/Unfolding/RooUnfold/CF_pp_legotrain/legotrain_CF_pp_1405_20170810-7TeV_LHC10_p2_AOD147.root'
 
-  print "Input file: "
-  print filename1
+  print("Input file: ")
+  print(filename1)
   Mixed_FullJets_R04 = datasetMixed("FullR04",NFIN=0,range=5,filename=filename1,directory='AliJJetJtTask/AliJJetJtHistManager',directory2='AliJJetJtTask_kEMCEJE/AliJJetJtHistManager',color=2,style=24,rebin=5)
   pp_FullJets_R04 = dataset("ppFullR04",NFIN=0,filename=filename2,directory='AliJJetJtTask/AliJJetJtHistManager',color=1,style=24,rebin=5)
   fig, axs = defs.makegrid(4,2,xlog=True,ylog=True,d=d,shareY=True)

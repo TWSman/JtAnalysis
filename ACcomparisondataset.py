@@ -14,8 +14,8 @@ import matplotlib.pyplot as plt
 import sys
 from dataset import *
 def main(): 
-  print 'Number of arguments: ', len(sys.argv), 'arguments.'
-  print 'Argument list:',str(sys.argv)
+  print('Number of arguments: ', len(sys.argv), 'arguments.')
+  print('Argument list:',str(sys.argv))
   filename = sys.argv[1]
   filename2 = sys.argv[2]
   comment = sys.argv[3]
@@ -23,8 +23,8 @@ def main():
     start = int(sys.argv[4])
   else:
     start = 1
-  print "Input file: "
-  print filename
+  print("Input file: ")
+  print(filename)
   
   LHC13d_FullJets = dataset("LHC13d",NFIN=0,range=(0,8),filename=filename,directory='AliJJetJtTask_kEMCEJE_{}/AliJJetJtHistManager'.format(comment),color=2,style=24,rebin=2)
   LHC13e_FullJets = dataset("LHC13e",NFIN=0,range=(0,8),filename=filename2,directory='AliJJetJtTask_kEMCEJE_{}/AliJJetJtHistManager'.format(comment),color=2,style=24,rebin=2)

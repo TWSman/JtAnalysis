@@ -43,8 +43,8 @@ labelsize= 15
 
 
 def main(): 
-  print 'Number of arguments: ', len(sys.argv), 'arguments.'
-  print 'Argument list:',str(sys.argv)
+  print('Number of arguments: ', len(sys.argv), 'arguments.')
+  print('Argument list:',str(sys.argv))
   filename = sys.argv[1]
   separate = int(sys.argv[2])
   if(len(sys.argv) > 3):
@@ -55,8 +55,8 @@ def main():
     end = 6
   n_figs = end-start
   print("Number of figs: {}".format(n_figs))
-  print "Input file: "
-  print filename
+  print("Input file: ")
+  print(filename)
   FullJets_R04 = dataset('Full jets R=0.4',NFIN=0,range=(start,end),filename=filename,directory='AliJJetJtTask/AliJJetJtHistManager',color=2,style=24,rebin=2)
   #Mixed_FullJets_R04 = datasetMixed("Full jets R=0.4",NFIN=0,range=5,filename=filename,directory='AliJJetJtTask/AliJJetJtHistManager',directory2='AliJJetJtTask_kEMCEJE/AliJJetJtHistManager',color=2,style=24,rebin=2)
   #signal,jetPt = FullJets_R04.getHist('JtWeightBin',jetpt = True)

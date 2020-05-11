@@ -11,14 +11,14 @@ import matplotlib.pyplot as plt
 import sys
 from dataset import *
 def main(): 
-  print 'Number of arguments: ', len(sys.argv), 'arguments.'
-  print 'Argument list:',str(sys.argv)
+  print('Number of arguments: ', len(sys.argv), 'arguments.')
+  print('Argument list:',str(sys.argv))
   filenameOriginal = sys.argv[1]
   filenameNew = sys.argv[2]
-  print "Input file Original: "
-  print filenameOriginal
-  print "Input file new: "
-  print filenameNew
+  print("Input file Original: ")
+  print(filenameOriginal)
+  print("Input file new: ")
+  print(filenameNew)
   #FullJets_R04 = dataset("FullR04",NFIN=0,filename=filename,directory='AliJJetJtTask_kEMCEJE/AliJJetJtHistManager',color=2,style=24,rebin=5)
   FullJets_R04_Original = dataset("Original",NFIN=0,range=8,filename=filenameOriginal,directory='AliJJetJtTask/AliJJetJtHistManager',color=2,style=24,rebin=5)
   FullJets_R04_New = dataset("New",NFIN = 0, range = 8, filename = filenameNew, directory = 'AliJJetJtTask/AliJJetJtHistManager',color=3, style=24,rebin = 5)

@@ -13,12 +13,12 @@ from dataset import *
 
 
 def main():
-    print "Number of arguments: ", len(sys.argv), "arguments."
-    print "Argument list:", str(sys.argv)
+    print("Number of arguments: ", len(sys.argv), "arguments.")
+    print("Argument list:", str(sys.argv))
     filename = sys.argv[1]
     separate = int(sys.argv[2])
-    print "Input file: "
-    print filename
+    print("Input file: ")
+    print(filename)
     FullJets_R04 = dataset(
         "Full jets R=0.4",
         NFIN=0,

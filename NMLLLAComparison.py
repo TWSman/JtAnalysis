@@ -43,14 +43,14 @@ def main():
   nmlla = [y/x for x,y in zip(jt_nmlla,nmlla)]
   print(jt_nmlla)
   
-  print 'Number of arguments: ', len(sys.argv), 'arguments.'
-  print 'Argument list:',str(sys.argv)
+  print('Number of arguments: ', len(sys.argv), 'arguments.')
+  print('Argument list:',str(sys.argv))
   filename = sys.argv[1]
   filename2 = sys.argv[2]
-  print "Input file data: "
-  print filename
-  print "Input NMLLA: "
-  print filename2
+  print("Input file data: ")
+  print(filename)
+  print("Input NMLLA: ")
+  print(filename2)
   #separate = 5 #bin 5: 60-80 Gev
   Mixed_FullJets_R04 = datasetMixed("Full jets R=0.4",NFIN=0,range=5,filename=filename,directory='AliJJetJtTask/AliJJetJtHistManager',directory2='AliJJetJtTask_kEMCEJE/AliJJetJtHistManager',color=2,style=24,rebin=2)
   signal,jetPt = Mixed_FullJets_R04.getSubtracted('JetConeJtWeightBin','BgJtWeightBin',jetpt = True)

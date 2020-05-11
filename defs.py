@@ -98,7 +98,7 @@ def makegrid(nx=4,ny=2,xlog=True,ylog=True,d=None,shareY=True,figsize = (10,5),*
       
   plt.tight_layout()
   plt.subplots_adjust(wspace =0,hspace=0) #Set space between subfigures to 0
-  #print axs.ndim
+  #print(axs.ndim)
   return fig,axs
 
 
@@ -161,7 +161,7 @@ def makeRatio(xlog=True,ylog=True,d=None,shareY=False,figsize = (4,6),**kwargs):
   #axs[0].xaxis.set_ticks([])
   plt.tight_layout()
   plt.subplots_adjust(wspace =0,hspace=0) #Set space between subfigures to 0
-  #print axs.ndim
+  #print(axs.ndim)
   return fig,axs
 
 

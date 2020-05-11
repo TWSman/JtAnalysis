@@ -14,16 +14,16 @@ import matplotlib.pyplot as plt
 import sys
 from dataset import *
 def main(): 
-  print 'Number of arguments: ', len(sys.argv), 'arguments.'
-  print 'Argument list:',str(sys.argv)
+  print('Number of arguments: ', len(sys.argv), 'arguments.')
+  print('Argument list:',str(sys.argv))
   filename = sys.argv[1]
   comment = sys.argv[2]
   if(len(sys.argv) > 3):
     start = int(sys.argv[3])
   else:
     start = 1
-  print "Input file: "
-  print filename
+  print("Input file: ")
+  print(filename)
   if comment in ["LHC13d","LHC13e","LHC13EMCAL"]:
     taskbase = "AliJJetJtTask_kEMCEJE"
   else:

@@ -17,11 +17,11 @@ import sys
 from dataset import *
 from numpy import linspace
 def main(): 
-  print 'Number of arguments: ', len(sys.argv), 'arguments.'
-  print 'Argument list:',str(sys.argv)
+  print('Number of arguments: ', len(sys.argv), 'arguments.')
+  print('Argument list:',str(sys.argv))
   filename = sys.argv[1]
-  print "Input file: "
-  print filename
+  print("Input file: ")
+  print(filename)
   MC_FullJets_R04 = dataset("FullR04",NFIN=0,range=(0,9),filename=filename,directory='AliJJetJtTask/AliJJetJtHistManager',color=2,style=24,rebin=1)
   
   response, jetPt = MC_FullJets_R04.get2DHist('TrackJtCorrBin',dir='AliJJetJtTask/AliJJetJtMCHistManager', jetpt = True)

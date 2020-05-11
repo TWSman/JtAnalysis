@@ -51,15 +51,15 @@ colors = [1,2,3,4,7,6]
 
 
 def main(): 
-  print ('Number of arguments: ', len(sys.argv), 'arguments.')
-  print ('Argument list:',str(sys.argv))
+  print('Number of arguments: ', len(sys.argv), 'arguments.')
+  print('Argument list:',str(sys.argv))
   filename = sys.argv[1]
   if len(sys.argv) > 2:
     fileData = sys.argv[2]
   else:
     fileData = None
-  print ("Input file: ")
-  print (filename)
+  print("Input file: ")
+  print(filename)
   Njets = 9
 
   if fileData is not None:

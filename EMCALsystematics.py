@@ -14,8 +14,8 @@ import matplotlib.pyplot as plt
 import sys
 from dataset import *
 def main(): 
-  print 'Number of arguments: ', len(sys.argv), 'arguments.'
-  print 'Argument list:',str(sys.argv)
+  print('Number of arguments: ', len(sys.argv), 'arguments.')
+  print('Argument list:',str(sys.argv))
   filename1 = "Pythia/pythia8226_pp5TeV_Monash2013_clusterCorr100_9000.root"
   filename2 = "Pythia/pythia8226_pp5TeV_Monash2013_clusterCorr98_6800.root"
   filename3 = "Pythia/pythia8226_pp5TeV_Monash2013_clusterCorr102_5000.root"

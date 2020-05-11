@@ -32,7 +32,7 @@ def main():
 
     print("Number of figs: {}".format(n_figs))
     print( "Input file: ")
-    print (filename)
+    print(filename)
     Mixed_FullJets_R04 = datasetMixed(title,NFIN=0,range=(1,5),filename=filename,directory='AliJJetJtTask/AliJJetJtHistManager',directory2='AliJJetJtTask_kEMCEJE/AliJJetJtHistManager',color=2,style=24,rebin=2)
     signal,jetPt = Mixed_FullJets_R04.getSubtracted('JetConeJtWeightBin','BgJtWeightBin',jetpt = True)
     

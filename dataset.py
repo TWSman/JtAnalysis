@@ -17,17 +17,16 @@ import math
 
 def parse_jet_pt_bins(hist_list, search="jet"):
     if search == "jet":
-        search_string = (r"p_{T, jet} : ([\d]*)\.[\d] - ([\d]*).[\d]*",)
+        search_string = r"p_{T, ?jet} : ([\d]*)\.?[\d]? - ([\d]*)\.?[\d]*"
     else:
-        search_string = (r"p_{T, constituent}:([\d]*)\.[\d]-([\d]*).[\d]*",)
+        search_string = r"p_{T, ?constituent}:([\d]*)\.?[\d]?-([\d]*)\.?[\d]*"
 
-    [
-        (
-            int(re.search(search_string, h.GetTitle(), re.M | re.I,).group(1)),
-            int(re.search(search_string, h.GetTitle(), re.M | re.I,).group(2)),
-        )
-        for h in hist_list
-    ]  # Use regular expressions to extract jet pT range from histogram titles
+    # Use regular expressions to extract jet pT range from histogram titles
+    res = [re.search(search_string, h.GetTitle(), re.M | re.I,) for h in hist_list]
+
+    bins = [(int(re.group(1)), int(re.group(2))) for re in res]
+    print(bins)
+    return bins
 
 
 class dataset(object):

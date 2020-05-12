@@ -9,7 +9,7 @@ from matplotlib.backends.backend_pdf import PdfPages
 import rootpy.plotting.root2matplotlib as rplt
 import matplotlib.pyplot as plt
 import sys
-from dataset import *
+from dataset import dataset, compareSetsWithRatio
 
 
 def main():

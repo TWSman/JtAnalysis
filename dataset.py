@@ -110,7 +110,7 @@ class dataset(object):
                 print("No random background")
                 self._measRndmBgN = [0 for i in range(self._range[0], self._range[1])]
 
-    def printStats(self, **kwargs):
+    def print_stats(self, **kwargs):
         """
         Print available statistics, number of jets by jet PT bin
 
@@ -139,6 +139,47 @@ class dataset(object):
         ]  # Get jT histograms from file an array
         jetPt = parse_jet_pt_bins(hist)
         print(jetPt)
+        if(kwargs.get('format', '') == 'latex'):
+            if(kwargs.get('what', '') == 'all'):
+                print('\\begin{tabular}{lllllllllll}')
+                print('{}'.format(self.name()),)
+            if(kwargs.get('what', '') == 'all' or kwargs.get('what', '') == 'jetpt'):
+                for pT in jetPt:
+                    print('& {}-{}'.format(pT[0],pT[1]),)
+                print('\\\\')
+            if(kwargs.get('what', '') == 'all' or kwargs.get('what', '') == 'jets'):
+                if(kwargs.get('what', '') == 'all'):
+                    print('Jets',)
+                else:
+                    print('{}'.format(self.name()),)
+                for N in self._measN:
+                    print('& {}'.format(N),)
+                print('\\\\')
+            if(kwargs.get('what', '') == 'all' or kwargs.get('what', '') == 'bg'):
+                if(kwargs.get('what', '') == 'all'):
+                    print('Bg Cones',)
+                else:
+                    print('{}'.format(self.name()),)
+                for N in self._measBgN:
+                    print('& {}'.format(N),)
+                print('\\\\')
+            if(kwargs.get('what', '') == 'all' or kwargs.get('what', '') == 'bgratio'):
+                if(kwargs.get('what', '') == 'all'):
+                    print('Bg ratio',)
+                else:
+                    print('{}'.format(self.name()),)
+                for N in ratios:
+                    print('& {:.2f}\\%'.format(100*N),)
+                    print('\\\\')
+            if(kwargs.get('what', '') == 'all'):
+                print('\\end{tabular}')
+        else:
+            print("{} Jets: ".format(self.name()))
+            print(self._measN)
+            print("{} Bg Cones: ".format(self.name()))
+            print(self._measBgN)
+            print("{} Bg Ratio: ".format(self.name()))
+            print(ratios)
 
     def getSubtracted(self, inclusive, background, **kwargs):
         hist, jetpt = self.getHist(inclusive, jetpt=True)

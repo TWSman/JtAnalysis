@@ -1,8 +1,9 @@
-import defs
-import rootpy.plotting.root2matplotlib as rplt
-import matplotlib.pyplot as plt
-import sys
 from dataset import dataset, d
+import defs
+import matplotlib.pyplot as plt
+import os
+import rootpy.plotting.root2matplotlib as rplt
+import sys
 
 
 def main():
@@ -28,6 +29,9 @@ def main():
     signal, jetPt = full_jets_r04.getSubtracted(
         "JetConeJtWeightBin", "BgJtWeightBin", jetpt=True, isWeight=True,
     )
+
+    if not os.path.exists('PythonFigures'):
+        os.makedirs('PythonFigures')
 
     if separate > 0:
         fig = plt.figure(1)

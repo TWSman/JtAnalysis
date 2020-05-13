@@ -73,6 +73,10 @@ class dataset(object):
         self._range = kwargs.get("range", (0, 9))
         self._fitDone = False
         self._drawFit = False
+        self._isWeight = kwargs.get("isWeight", False)
+
+        if self._isWeight:
+            return
 
         with root_open(self._filename, "read") as f:
             self._measN = [
@@ -134,6 +138,7 @@ class dataset(object):
             for i in range(self._range[0], self._range[1])
         ]  # Get jT histograms from file an array
         jetPt = parse_jet_pt_bins(hist)
+        print(jetPt)
 
     def getSubtracted(self, inclusive, background, **kwargs):
         hist, jetpt = self.getHist(inclusive, jetpt=True)
@@ -218,8 +223,7 @@ class dataset(object):
         else:
             N = self._measN[ij]
         if self.properties.get("isWeight", False) or kwargs.get("isWeight", False):
-            hist.Scale(1.0, "width")
-            print("ISWEIGHT")
+            pass
         else:
             hist.Scale(1.0 / N, "width")
         return hist
@@ -229,12 +233,15 @@ class dataset(object):
         Retrieve a list of histograms by jet pT bins
 
         Args:
-          name: Name of histogram
+        name: Name of histogram
 
         Kwargs:
-          isbg: Determines which normalization to use
-          isWeight: Determines if the data is already normalized by number of jets/background. Bin width correction is done anyway
-          extra: String to add to the end of the histogram name. (For additional binning etc.)
+        isbg: Determines which normalization to use
+        isWeight: Determines if the data is already normalized by number of
+                  jets/background.
+                  Bin width correction should have been also done
+        extra: String to add to the end of the histogram name.
+               (For additional binning etc.)
 
         """
         extra = kwargs.get("extra", "")
@@ -290,9 +297,18 @@ class dataset(object):
             print(self._measN)
         else:
             normalization = self._measN
-        for h, N, bgN, rndmbgN in zip(
-            hist, normalization, self._measBgN, self._measRndmBgN
-        ):
+
+        if self.properties.get("isWeight", False):
+            normalizer = range(10)
+        else:
+            if kwargs.get("isBg", False):
+                normalizer = self._measBgN
+            elif kwargs.get("isRndmBg", False):
+                normalizer = self._measRndmBgN
+            else:
+                normalizer = normalization
+
+        for h, N in zip(hist, normalizer):
             h.Sumw2()
             # print("Rebinning {} by {} in set {} that has {} bins".format(h.GetTitle(), self._rebin, self._name, h.GetNbinsX()))
             h.Rebin(self._rebin)
@@ -300,22 +316,17 @@ class dataset(object):
             if self.properties.get("isWeight", False):
                 h.SetLineColor(self.properties.get("color", 1))
                 h.SetMarkerColor(self.properties.get("color", 1))
-                h.Scale(1.0, "width")
             else:
+                h.Scale(1.0 / N, "width")
                 if kwargs.get("isBg", False):
                     h.SetLineColor(self.properties.get("color", 1) + 1)
                     h.SetMarkerColor(self.properties.get("color", 1) + 1)
-                    h.Scale(1.0 / bgN, "width")
-                    print("{} is bg".format(name))
                 elif kwargs.get("isRndmBg", False):
-                    print("Is random background")
                     h.SetLineColor(self.properties.get("color", 1) + 2)
                     h.SetMarkerColor(self.properties.get("color", 1) + 2)
-                    h.Scale(1.0 / rndmbgN, "width")
                 else:
                     h.SetLineColor(self.properties.get("color", 1))
                     h.SetMarkerColor(self.properties.get("color", 1))
-                    h.Scale(1.0 / N, "width")
 
             h.SetMarkerStyle(self.properties.get("style", 24))
             h.SetMarkerSize(0.5)
@@ -335,7 +346,9 @@ class dataset(object):
 
         Kwargs:
           isbg: Determines which normalization to use
-          isWeight: Determines if the data is already normalized by number of jets/background. Bin width correction is done anyway
+          isWeight: Determines if the data is already normalized by number
+                    of jets/background.
+                    Bin width correction is also assumed to have been done anyway
 
         """
         hists = []
@@ -393,7 +406,6 @@ class dataset(object):
                 if self.properties.get("isWeight", False):
                     h.SetLineColor(self.properties.get("color", 1))
                     h.SetMarkerColor(self.properties.get("color", 1))
-                    h.Scale(1.0, "width")
                 else:
                     if kwargs.get("isBg", False):
                         h.SetLineColor(self.properties.get("color", 1) + 1)
@@ -738,7 +750,6 @@ class datasetMixed(dataset, object):
             if self.properties.get("isWeight", False):
                 h.SetLineColor(self.properties.get("color", 1))
                 h.SetMarkerColor(self.properties.get("color", 1))
-                h.Scale(1.0, "width")
             else:
                 if kwargs.get("isBg", False):
                     h.SetLineColor(self.properties.get("color", 1) + 1)

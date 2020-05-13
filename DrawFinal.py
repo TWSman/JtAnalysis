@@ -16,13 +16,17 @@ def main():
         "Full jets R=0.4",
         NFIN=0,
         filename=filename,
-        directory="data/BayesSubUnfolding",
+        directory="MBDataUnfolder/BayesSubUnfolding",
         color=2,
         style=24,
-        rebin=5,
+        rebin=1,
+        isWeight=True,
     )
+
+    # The histograms have already been scaled correctly
+    # Thus no further scaling is needed
     signal, jetPt = full_jets_r04.getSubtracted(
-        "JetConeJtWeightBin", "BgJtWeightBin", jetpt=True
+        "JetConeJtWeightBin", "BgJtWeightBin", jetpt=True, isWeight=True,
     )
 
     if separate > 0:
